@@ -5,7 +5,6 @@ import type { CerapanSection } from "@/lib/cerapan/types";
 import { hitungBKD } from "@/lib/cerapan/calculator/hitungBKD";
 import { findBKDRule } from "@/lib/cerapan/rules/findBKDRules";
 import { evaluasiKebenaran } from "@/lib/cerapan/calculator/evaluasiKebenaran";
-import { evaluasiPenyetelTara } from "@/lib/cerapan/calculator/evaluasiPenyetelTara";
 import { CerapanCell } from "./CerapanCell";
 import { CerapanRepeatTambahan } from "./repeatTambahan";
 import { CerapanPenyetelanNolTambahan } from "./PenyetelanNolTambahan";
@@ -13,6 +12,7 @@ import { CerapanKebenaranTambahan } from "./KebenaranTambahan";
 import { handleRepeatability } from "@/handlers/handleRepeatability";
 import { handleRepeatabilityTambahan } from "@/handlers/handleRepeatabilityTambahan";
 import { handlePenyetelanNol } from "@/handlers/handlePenyetelanNol";
+import { handlePenyetelTara } from "@/handlers/handlePenyetelTara";
 
 interface Props {
     section: CerapanSection;
@@ -228,21 +228,20 @@ export function CerapanTable({
         });
         let row =
             updated[index];
+        /*
+        ==========================================
+        PENYETEL TARA
+        ==========================================
+        */
+        handlePenyetelTara({
 
-        if (
-            section.generator === "PENYETEL_TARA" &&
-            (
-                key === "penunjukan10e" ||
-                key === "penunjukan025e" ||
-                key === "penunjukan05e"
-            )
-        ) {
+            key,
 
-            evaluasiPenyetelTara(
-                updated[index]
-            );
+            updated,
 
-        }
+            index
+
+        });
         /*
         ==========================================
         REPEATABILITY
