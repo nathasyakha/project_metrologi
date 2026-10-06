@@ -159,33 +159,6 @@ export function CerapanTable({
 
     /*
      * ==========================================
-     * READONLY VALUE
-     * ==========================================
-     */
-
-    function renderReadonlyValue(
-        value: any
-    ) {
-
-        if (
-            value === null ||
-            value === undefined ||
-            value === "" ||
-            Number.isNaN(value)
-        ) {
-
-            return "";
-
-        }
-
-
-        return value;
-
-    }
-
-
-    /*
-     * ==========================================
      * COLUMN WIDTH
      * ==========================================
      */

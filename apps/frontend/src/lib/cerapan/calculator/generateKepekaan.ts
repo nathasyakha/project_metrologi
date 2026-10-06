@@ -36,7 +36,6 @@ export function generateKepekaan(
     const bkd =
         hitungBKD({
             rule,
-            kelas: data.kelas,
             titikUji: muatan,
             nilaiE: data.nilaiE,
             layanan: data.layanan
