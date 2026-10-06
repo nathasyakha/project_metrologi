@@ -1,0 +1,17 @@
+{
+  "name": "legal-metrology-system",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "bun --filter \"*\" run dev"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.0"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,52 @@
+import { findBKDRule } from "../rules/findBKDRules";
+import { hitungBKD } from "./hitungBKD";
+
+interface Input {
+    jenisAlat: string;
+    kelas: string;
+    kapasitasMaksimum: number;
+    nilaiE: number;
+    layanan:
+    | "TERA"
+    | "TERA_ULANG";
+}
+
+
+
+export function generateKepekaan(
+    data: Input
+) {
+
+    const rule =
+        findBKDRule({
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            pengujian: "KEPEKAAN"
+        });
+
+    if (!rule) {
+        throw new Error(
+            "Rule kepekaan tidak ditemukan"
+        );
+    }
+
+    const muatan =
+        data.kapasitasMaksimum;
+
+    const bkd =
+        hitungBKD({
+            rule,
+            kelas: data.kelas,
+            titikUji: muatan,
+            nilaiE: data.nilaiE,
+            layanan: data.layanan
+        });
+    return {
+        muatan,
+        imbuhBKD: bkd,
+        penunjukanAwal: null,
+        penunjukanAkhir: null,
+        perubahan: null,
+        hasil: null
+    };
+}

@@ -1,0 +1,28 @@
+Kita sedang melanjutkan pengembangan aplikasi web Metrologi Legal (frontend: React, Vite, Tailwind CSS, TypeScript; backend: ElysiaJS, Drizzle ORM, MySQL).
+
+SEBELUM MELANJUTKAN, HARAP PATUHI ATURAN KETAT BERIKUT:
+1. JANGAN MENGUBAH, MENGHAPUS, ATAU MERUSAK KODE YANG SUDAH ADA (terutama file Auth, DokumenMutuList, DokumenMutuForm, skema database lama, dan komponen UI yang sudah berfungsi).
+2. Gunakan pendekatan modular. Jangan mencampur aduk logika baru ke dalam file yang sudah stabil.
+3. Tetap gunakan standar styling yang sama: Tailwind CSS dengan palet warna tema (navy/slate/brass), serta pustaka komponen yang sudah ada (React Hook Form, TanStack React Query, Lucide React, SweetAlert2).
+
+TUGAS SAAT INI: REVIEW & INTEGRASI FITUR PENERAAN
+Sebelumnya, kamu sudah membuatkan draf kode backend untuk fitur peneraan (berisi apps/backend/src/db/schema.ts, apps/backend/src/routes/owners.ts, apps/backend/src/routes/instruments.ts, apps/backend/src/routes/observation.ts, apps/backend/src/routes/certificate.ts, dan apps/backend/src/routes/pengawasan.ts). Saya ingin kamu meninjau ulang kode backend tersebut untuk memastikan apakah strukturnya sudah sepenuhnya mendukung dua alur kerja berikut:
+
+SKEMA 1 (Online / Permohonan Mandiri):
+1. Pemilik alat mengajukan permohonan via form.
+2. Admin meninjau & menjadwalkan.
+3. Petugas penera melaksanakan & menginput hasil ke sistem.
+4. Admin menerbitkan sertifikat.
+5. Pemilik mengunduh sertifikat.
+
+SKEMA 2 (Offline / Datang Langsung ke Kantor):
+1. Pemilik datang ke kantor.
+2. Admin menginput registrasi pemilik & identitas alat.
+3. Petugas penera melaksanakan & menginput hasil ke sistem.
+4. Admin menerbitkan sertifikat.
+5. Pemilik mengunduh sertifikat.
+
+INSTRUKSI UNTUKMU:
+1. Tolong baca kode backend di file ini apps/backend/src/db/schema.ts, apps/backend/src/routes/owners.ts, apps/backend/src/routes/instruments.ts, apps/backend/src/routes/observation.ts, apps/backend/src/routes/certificate.ts, dan apps/backend/src/routes/pengawasan.ts.
+2. Analisis apakah relasi antar tabel dan status tracking sudah cukup untuk mengakomodasi Skema 1 dan Skema 2 di atas. 
+3. Berikan saran perbaikan kode backend-nya JIKA diperlukan. Jika sudah aman, kita akan lanjut membuat Frontend-nya.
