@@ -5,8 +5,6 @@ import type { CerapanSection } from "@/lib/cerapan/types";
 import { hitungBKD } from "@/lib/cerapan/calculator/hitungBKD";
 import { findBKDRule } from "@/lib/cerapan/rules/findBKDRules";
 import { evaluasiKebenaran } from "@/lib/cerapan/calculator/evaluasiKebenaran";
-import { evaluasiJenisPenyetelNol } from "@/lib/cerapan/calculator/evaluasiJenisPenyetelNol";
-import { evaluasiPenyetelanNol } from "@/lib/cerapan/calculator/evaluasiPenyetelNol";
 import { evaluasiPenyetelTara } from "@/lib/cerapan/calculator/evaluasiPenyetelTara";
 import { CerapanCell } from "./CerapanCell";
 import { CerapanRepeatTambahan } from "./repeatTambahan";
@@ -14,6 +12,7 @@ import { CerapanPenyetelanNolTambahan } from "./PenyetelanNolTambahan";
 import { CerapanKebenaranTambahan } from "./KebenaranTambahan";
 import { handleRepeatability } from "@/handlers/handleRepeatability";
 import { handleRepeatabilityTambahan } from "@/handlers/handleRepeatabilityTambahan";
+import { handlePenyetelanNol } from "@/handlers/handlePenyetelanNol";
 
 interface Props {
     section: CerapanSection;
@@ -216,101 +215,17 @@ export function CerapanTable({
 
         };
 
-        /*
- /*
-==========================================
-PENYETELAN NOL
-==========================================
-*/
+        handlePenyetelanNol({
 
-        if (
-            section.generator === "PENYETELAN_NOL"
-        ) {
+            key,
 
-            if (
-                key === "penunjukanSM025e" ||
-                key === "penunjukanSM10e"
-            ) {
+            value,
 
-                updated[index].hasil =
-                    null;
+            updated,
 
-            }
+            index
 
-            /*
-            ==========================
-            PILIH JENIS PENYETEL NOL
-            ==========================
-            */
-
-            if (
-                key === "pemeriksaan"
-            ) {
-
-                const jenis =
-                    evaluasiJenisPenyetelNol(
-                        value
-                    );
-
-
-                updated[index].jenisPenyetelNol =
-                    jenis.jenisPenyetelNol;
-
-
-                updated[index].hasil =
-                    null;
-
-            }
-
-
-
-            /*
-            ==========================
-            OTOMATIS
-            ==========================
-            */
-
-
-            if (
-
-                key === "penunjukanOtomatis10e" ||
-                key === "penunjukanOtomatis025e" ||
-                key === "penunjukanOtomatis05e"
-
-            ) {
-
-                evaluasiPenyetelanNol(
-                    updated[index]
-                );
-
-            }
-
-
-
-            /*
-            ==========================
-            SEMI OTOMATIS
-            ==========================
-            */
-
-
-            if (
-
-                key === "penunjukanSM10e" ||
-                key === "penunjukanSM025e" ||
-                key === "penunjukanSM05e"
-
-            ) {
-
-
-                evaluasiPenyetelanNol(
-                    updated[index]
-                );
-
-            }
-
-
-        }
+        });
         let row =
             updated[index];
 
@@ -334,20 +249,16 @@ PENYETELAN NOL
         ==========================================
         */
 
-        if (
-            section.generator === "REPEATABILITY"
-        ) {
-            handleRepeatability({
-                key,
-                updated,
-            });
+        handleRepeatability({
+            key,
+            updated
+        });
 
-            handleRepeatabilityTambahan({
-                key,
-                updated
-            });
+        handleRepeatabilityTambahan({
+            key,
+            updated
+        });
 
-        }
         /*
          * ==========================================
          * INPUT UJI TAMBAHAN 0,5e

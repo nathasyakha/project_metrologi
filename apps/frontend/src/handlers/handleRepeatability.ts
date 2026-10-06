@@ -149,67 +149,113 @@ export function handleRepeatability({
                 v !== undefined &&
                 v !== ""
         )
-        .map(
-            Number
-        );
-
-    if (nilai.length < 2) {
-
-        updated[2].repeat = null;
-        updated[2].hasil = null;
-
-        return;
-
-    }
-
-    const pMax =
-        Math.max(...nilai);
+        .map(Number);
 
 
 
-    const pMin =
-        Math.min(...nilai);
+    let repeat = null;
 
-    const selisih =
-        Math.abs(
-            Number(p1) - Number(p2)
-        );
-
-    updated[2].selisih = selisih;
-
-    const repeat =
-        Number(
-            (
-                pMax - pMin
-            )
-                .toFixed(3)
-        );
-
-
-
-    updated[2].repeat =
-        repeat;
-
-
-
-    updated[2].hasil =
-
-        repeat <= batas
-
-            ?
-
-            "SAH"
-
-            :
-
-            "BATAL";
 
 
     /*
     =============================
-    KASUS TAMBAHAN
+    HITUNG REPEATABILITY
+    MINIMAL 2 DATA
     =============================
     */
+
+    if (
+        nilai.length >= 2
+    ) {
+
+
+        const pMax =
+            Math.max(...nilai);
+
+
+        const pMin =
+            Math.min(...nilai);
+
+
+
+        repeat =
+            Number(
+                (
+                    pMax - pMin
+                )
+                    .toFixed(3)
+            );
+
+
+        updated[2].repeat =
+            repeat;
+
+
+    }
+    else {
+
+        updated[2].repeat =
+            null;
+
+    }
+
+
+
+    /*
+    =============================
+    HASIL HANYA JIKA 3 DATA
+    =============================
+    */
+
+
+    if (
+        nilai.length === 3 &&
+        repeat !== null
+    ) {
+
+
+        updated[2].hasil =
+
+            repeat <= batas
+
+                ?
+
+                "SAH"
+
+                :
+
+                "BATAL";
+
+
+    }
+    else {
+
+
+        updated[2].hasil = null;
+
+
+    }
+
+
+
+    /*
+    =============================
+    CEK TAMBAHAN
+    P1-P2 = BATAS
+    =============================
+    */
+
+
+    const selisih =
+        Math.abs(
+            Number(p1) -
+            Number(p2)
+        );
+
+
+    updated[2].selisih =
+        selisih;
+
 
 
     if (
@@ -224,7 +270,6 @@ export function handleRepeatability({
             true;
 
     }
-
     else {
 
         updated[2].perluUjiTambahan =
