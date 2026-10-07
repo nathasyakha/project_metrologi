@@ -109,6 +109,7 @@ export function CerapanModal({
                     {
                         template.pemeriksaan.map(section => (
                             <CerapanSection
+                                template={template}
                                 key={section.id}
                                 section={section}
                                 instrument={mappedInstrument}
@@ -125,6 +126,7 @@ export function CerapanModal({
                         {
                             template.pengujian.map(section => (
                                 <CerapanSection
+                                    template={template}
                                     key={section.id}
                                     section={section}
                                     instrument={mappedInstrument}

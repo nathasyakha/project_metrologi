@@ -1,18 +1,20 @@
 "use client";
 
 import { useMemo } from "react";
-import type { CerapanSection as SectionType } from "@/lib/cerapan/types";
+import type { CerapanSection as SectionType, CerapanTemplate } from "@/lib/cerapan/types";
 import { runCerapanGenerator } from "@/lib/cerapan/runGenerator";
 import { CerapanTable } from "./CerapanTable";
 import { CerapanChecklist } from "./CerapanChecklist";
 
 
 interface Props {
+    template: CerapanTemplate;
     section: SectionType;
     instrument: any;
 }
 
 export function CerapanSection({
+    template,
     section,
     instrument
 }: Props) {
@@ -60,6 +62,7 @@ export function CerapanSection({
                         }
 
                         <CerapanTable
+                            template={template}
                             section={{
                                 ...section,
                                 rule: section.rule

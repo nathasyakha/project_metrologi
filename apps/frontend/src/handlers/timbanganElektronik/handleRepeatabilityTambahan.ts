@@ -30,26 +30,63 @@ export function handleRepeatabilityTambahan({
     const row = updated[2];
 
     /*
-    =============================
-    PENUNJUKAN SEBENARNYA
-    P = I + 0,5e - ΔL
-    =============================
-    */
+=============================
+PENUNJUKAN SEBENARNYA
+P = I + 0,5e - ΔL
+=============================
+*/
+
+    function hitungPenunjukanSebenarnya(
+        penunjukan: any,
+        imbuh: any,
+        nilaiE: any
+    ) {
+
+        if (
+            penunjukan === null ||
+            penunjukan === undefined ||
+            penunjukan === ""
+        ) {
+            return null;
+        }
+
+
+        return (
+            Number(penunjukan)
+            +
+            (Number(nilaiE) * 0.5)
+            -
+            Number(imbuh ?? 0)
+        );
+
+    }
+
+
 
     row.penunjukanSebenarnya1 =
-        Number(row.penunjukanTambahan1) +
-        (Number(row.nilaiE) * 0.5) -
-        Number(row.imbuh1);
+        hitungPenunjukanSebenarnya(
+            row.penunjukanTambahan1,
+            row.imbuh1,
+            row.nilaiE
+        );
+
 
     row.penunjukanSebenarnya2 =
-        Number(row.penunjukanTambahan2) +
-        (Number(row.nilaiE) * 0.5) -
-        Number(row.imbuh2);
+        hitungPenunjukanSebenarnya(
+            row.penunjukanTambahan2,
+            row.imbuh2,
+            row.nilaiE
+        );
+
 
     row.penunjukanSebenarnya3 =
-        Number(row.penunjukanTambahan3) +
-        (Number(row.nilaiE) * 0.5) -
-        Number(row.imbuh3);
+        hitungPenunjukanSebenarnya(
+            row.penunjukanTambahan3,
+            row.imbuh3,
+            row.nilaiE
+        );
+
+
 
     /*
     =============================
@@ -58,20 +95,32 @@ export function handleRepeatabilityTambahan({
     */
 
     const nilai = [
-        Number(row.penunjukanSebenarnya1),
-        Number(row.penunjukanSebenarnya2),
-        Number(row.penunjukanSebenarnya3)
-    ];
+
+        row.penunjukanSebenarnya1,
+
+        row.penunjukanSebenarnya2,
+
+        row.penunjukanSebenarnya3
+
+    ].filter(
+        v =>
+            v !== null &&
+            v !== undefined
+    );
+
 
     const valid =
-        nilai.every(
-            Number.isFinite
-        );
+        nilai.length === 3;
+
 
     if (!valid) {
+
         row.repeatTambahan = null;
+
         row.hasilTambahan = null;
+
         return;
+
     }
 
     /*

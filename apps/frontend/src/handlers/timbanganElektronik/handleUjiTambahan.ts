@@ -1,4 +1,4 @@
-import { evaluasiUjiTambahan } from "../lib/cerapan/calculator/evaluasiUjiTambahanKebenaran";
+import { evaluasiUjiTambahan } from "../../lib/cerapan/calculator/evaluasiUjiTambahanKebenaran";
 import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function handleUjiTambahan({

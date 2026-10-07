@@ -1,70 +1,30 @@
-import { handlePenyetelanNol } from "./handlePenyetelanNol";
-import { handlePenyetelTara } from "./handlePenyetelTara";
-import { handleKebenaranEksentrisitas } from "./handleKebenaranEksentrisitas";
-import { handleRepeatability } from "./handleRepeatability";
-import { handleRepeatabilityTambahan } from "./handleRepeatabilityTambahan";
-import { handleUjiTambahan } from "./handleUjiTambahan";
-import { HandlerContext } from "@/lib/cerapan/types/handler";
+import {
+    handler as handlerTimbanganElektronik
+}
+    from "./timbanganElektronik";
+
+
 
 export function runCerapanHandler(
-    context: HandlerContext
+    context: any
 ) {
-    const {
-        section
-    } = context;
 
-    /*
-    ==========================
-    TAMBAHAN KHUSUS
-    ==========================
-    */
+    const jenisAlat =
+        context.template.jenisAlat;
 
-    const handledTambahan =
-        handleUjiTambahan(
+
+
+    if (
+        jenisAlat === "TIMBANGAN_ELEKTRONIK"
+    ) {
+
+        return handlerTimbanganElektronik(
             context
         );
 
-    if (handledTambahan) {
-        return true;
     }
 
-    /*
-    ==========================
-    HANDLER GENERATOR
-    ==========================
-    */
 
-    if (!section.generator) {
-        return false;
-    }
-
-    switch (
-    section.generator
-    ) {
-        case "PENYETELAN_NOL":
-            handlePenyetelanNol(
-                context
-            );
-            break;
-        case "PENYETEL_TARA":
-            handlePenyetelTara(
-                context
-            );
-            break;
-        case "KEBENARAN":
-        case "EKSENTRISITAS":
-            handleKebenaranEksentrisitas(
-                context
-            );
-            break;
-        case "REPEATABILITY":
-            handleRepeatability(
-                context
-            );
-            handleRepeatabilityTambahan(
-                context
-            );
-            break;
-    }
     return false;
+
 }

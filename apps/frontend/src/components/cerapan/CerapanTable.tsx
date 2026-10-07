@@ -1,16 +1,18 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import type { CerapanSection } from "@/lib/cerapan/types";
+import type { CerapanSection, CerapanTemplate } from "@/lib/cerapan/types";
 import { CerapanCell } from "./CerapanCell";
 import { runCerapanHandler } from "@/handlers/registry";
 
 interface Props {
+    template: CerapanTemplate;
     section: CerapanSection;
     data: any[];
 }
 
 export function CerapanTable({
+    template,
     section,
     data
 }: Props) {
@@ -50,6 +52,11 @@ export function CerapanTable({
         key: string,
         value: any
     ) {
+        console.log(
+            "INPUT CHANGE",
+            key,
+            value
+        );
         const updated = [...rows];
         updated[index] = {
             ...updated[index],
@@ -58,6 +65,8 @@ export function CerapanTable({
 
         const handled =
             runCerapanHandler({
+
+                template,
 
                 section,
 
@@ -70,7 +79,6 @@ export function CerapanTable({
                 index
 
             });
-
 
 
         if (handled) {
@@ -412,6 +420,9 @@ export function CerapanTable({
 
             {
                 section.summaryComponent &&
+                rows.some(
+                    row => row.tampilTambahan === true
+                ) &&
                 (() => {
 
                     const SummaryComponent =
@@ -419,17 +430,11 @@ export function CerapanTable({
 
 
                     return (
-
                         <SummaryComponent
-
                             rows={rows}
-
                             updateValue={updateValue}
-
                             section={section}
-
                         />
-
                     );
 
                 })()
