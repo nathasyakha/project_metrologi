@@ -132,9 +132,7 @@ export function CerapanTable({
         });
 
 
-        setRows(
-            updated
-        );
+
 
         const handledTambahan =
             handleUjiTambahan({
@@ -154,6 +152,10 @@ export function CerapanTable({
             return;
 
         }
+
+        setRows(
+            updated
+        );
     }
 
 
