@@ -4,14 +4,7 @@ import { handleKebenaranEksentrisitas } from "./handleKebenaranEksentrisitas";
 import { handleRepeatability } from "./handleRepeatability";
 import { handleRepeatabilityTambahan } from "./handleRepeatabilityTambahan";
 import { handleUjiTambahan } from "./handleUjiTambahan";
-
-type HandlerContext = {
-    section: any;
-    key: string;
-    value: any;
-    updated: any[];
-    index: number;
-};
+import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function runCerapanHandler(
     context: HandlerContext
@@ -41,6 +34,9 @@ export function runCerapanHandler(
     ==========================
     */
 
+    if (!section.generator) {
+        return false;
+    }
 
     switch (
     section.generator

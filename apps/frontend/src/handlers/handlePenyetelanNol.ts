@@ -1,32 +1,20 @@
 import { evaluasiJenisPenyetelNol } from "@/lib/cerapan/calculator/evaluasiJenisPenyetelNol";
 import { evaluasiPenyetelanNol } from "@/lib/cerapan/calculator/evaluasiPenyetelNol";
-
+import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function handlePenyetelanNol({
-
     key,
-
     value,
-
     updated,
-
     index
-
-}: any) {
-
-
-
+}: HandlerContext) {
     if (
         key === "penunjukanSM025e" ||
         key === "penunjukanSM10e"
     ) {
-
         updated[index].hasil =
             null;
-
     }
-
-
 
     /*
     ==========================
@@ -34,29 +22,18 @@ export function handlePenyetelanNol({
     ==========================
     */
 
-
     if (
         key === "pemeriksaan"
     ) {
-
-
         const jenis =
             evaluasiJenisPenyetelNol(
                 value
             );
-
-
         updated[index].jenisPenyetelNol =
             jenis.jenisPenyetelNol;
-
-
         updated[index].hasil =
             null;
-
-
     }
-
-
 
     /*
     ==========================
@@ -64,24 +41,15 @@ export function handlePenyetelanNol({
     ==========================
     */
 
-
     if (
-
         key === "penunjukanOtomatis10e" ||
         key === "penunjukanOtomatis025e" ||
         key === "penunjukanOtomatis05e"
-
     ) {
-
-
         evaluasiPenyetelanNol(
             updated[index]
         );
-
-
     }
-
-
 
     /*
     ==========================
@@ -89,22 +57,13 @@ export function handlePenyetelanNol({
     ==========================
     */
 
-
     if (
-
         key === "penunjukanSM10e" ||
         key === "penunjukanSM025e" ||
         key === "penunjukanSM05e"
-
     ) {
-
-
         evaluasiPenyetelanNol(
             updated[index]
         );
-
-
     }
-
-
 }

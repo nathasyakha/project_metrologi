@@ -1,20 +1,12 @@
-import {
-    evaluasiUjiTambahan
-} from "../lib/cerapan/calculator/evaluasiUjiTambahanKebenaran";
-
+import { evaluasiUjiTambahan } from "../lib/cerapan/calculator/evaluasiUjiTambahanKebenaran";
+import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function handleUjiTambahan({
-
     section,
-
     key,
-
     updated,
-
     index
-
-}: any) {
-
+}: HandlerContext) {
 
     if (
         (
@@ -24,17 +16,10 @@ export function handleUjiTambahan({
         &&
         key === "penunjukanSetelahImbuh"
     ) {
-
         evaluasiUjiTambahan(
             updated[index]
         );
-
-
         return true;
-
     }
-
-
     return false;
-
 }
