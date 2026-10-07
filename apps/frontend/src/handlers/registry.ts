@@ -1,7 +1,4 @@
-import {
-    handler as handlerTimbanganElektronik
-}
-    from "./timbanganElektronik";
+import { handler as handlerTimbanganElektronik } from "./timbanganElektronik";
 
 
 
