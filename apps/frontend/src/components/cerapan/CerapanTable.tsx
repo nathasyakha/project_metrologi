@@ -58,51 +58,48 @@ export function CerapanTable({
         key: string,
         value: any
     ) {
-
-        const updated =
-            [...rows];
-
-
+        const updated = [...rows];
         updated[index] = {
-
             ...updated[index],
-
-            [key]:
-                value
-
+            [key]: value
         };
 
+        /*
+        ==========================================
+        UJI TAMBAHAN
+        ==========================================
+        */
+
+        const handledTambahan =
+            handleUjiTambahan({
+                section,
+                key,
+                updated,
+                index
+            });
+        if (handledTambahan) {
+            setRows(updated);
+            return;
+        }
+
+        /*
+        ==========================================
+        HANDLER UTAMA
+        ==========================================
+        */
+
         handlePenyetelanNol({
-
             key,
-
             value,
-
             updated,
-
             index
-
         });
 
-        /*
-        ==========================================
-        PENYETEL TARA
-        ==========================================
-        */
         handlePenyetelTara({
-
             key,
-
             updated,
-
             index
-
         });
-        /*
-        ==========================================
-        REPEATABILITY
-        ==========================================
-        */
 
         handleRepeatability({
             key,
@@ -114,48 +111,19 @@ export function CerapanTable({
             updated
         });
 
-        /*
-         * ==========================================
-         * PENGUJIAN KEBENARAN
-         * ==========================================
-         */
-
         if (
-            section.generator ===
-            "KEBENARAN" ||
-            section.generator ===
-            "EKSENTRISITAS"
+            section.generator === "KEBENARAN" ||
+            section.generator === "EKSENTRISITAS"
         ) handleKebenaranEksentrisitas({
             key,
             updated,
             index
         });
 
+        setRows(updated);
 
 
 
-        const handledTambahan =
-            handleUjiTambahan({
-
-                section,
-                key,
-                updated,
-                index
-
-            });
-
-
-        if (handledTambahan) {
-
-            setRows(updated);
-
-            return;
-
-        }
-
-        setRows(
-            updated
-        );
     }
 
 
