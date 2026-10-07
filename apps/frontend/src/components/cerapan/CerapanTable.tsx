@@ -3,9 +3,6 @@
 import { Fragment, useEffect, useState } from "react";
 import type { CerapanSection } from "@/lib/cerapan/types";
 import { CerapanCell } from "./CerapanCell";
-import { CerapanRepeatTambahan } from "./repeatTambahan";
-import { CerapanPenyetelanNolTambahan } from "./PenyetelanNolTambahan";
-import { CerapanKebenaranTambahan } from "./KebenaranTambahan";
 import { handleRepeatability } from "@/handlers/handleRepeatability";
 import { handleRepeatabilityTambahan } from "@/handlers/handleRepeatabilityTambahan";
 import { handlePenyetelanNol } from "@/handlers/handlePenyetelanNol";
@@ -121,9 +118,6 @@ export function CerapanTable({
         });
 
         setRows(updated);
-
-
-
     }
 
 
@@ -325,51 +319,36 @@ export function CerapanTable({
                                     {/* ======================================= */}
                                     {/* UI KEBENARAN DAN EKSENTRISITAS TAMBAHAN */}
                                     {/* ======================================= */}
+                                    {
+                                        section.additionalComponent &&
+                                        (() => {
 
-                                    <CerapanKebenaranTambahan
-
-                                        section={section}
-
-                                        row={row}
-
-                                        index={index}
-
-                                        jumlahKolom={
-                                            section.columns?.length ?? 1
-                                        }
-
-                                        updateValue={updateValue}
-
-                                    />
+                                            const AdditionalComponent =
+                                                section.additionalComponent;
 
 
-                                    {/* ================================= */}
-                                    {/* UI PENYETELAN NOL LANJUTAN */}
-                                    {/* ================================= */}
+                                            return (
 
-                                    <CerapanPenyetelanNolTambahan
+                                                <AdditionalComponent
 
-                                        section={
-                                            section
-                                        }
+                                                    section={section}
 
-                                        row={
-                                            row
-                                        }
+                                                    row={row}
 
-                                        index={
-                                            index
-                                        }
+                                                    index={index}
 
-                                        jumlahKolom={
-                                            jumlahKolom
-                                        }
+                                                    jumlahKolom={jumlahKolom}
 
-                                        updateValue={
-                                            updateValue
-                                        }
+                                                    updateValue={updateValue}
 
-                                    />
+                                                />
+
+                                            );
+
+
+                                        })()
+                                    }
+
 
                                 </Fragment>
 
@@ -467,15 +446,29 @@ export function CerapanTable({
             }
 
             {
-                rows[rows.length - 1]?.tampilTambahan &&
-                (
-                    <CerapanRepeatTambahan
-                        rows={rows}
-                        updateValue={updateValue}
-                    />
-                )
-            }
+                section.summaryComponent &&
+                (() => {
 
+                    const SummaryComponent =
+                        section.summaryComponent;
+
+
+                    return (
+
+                        <SummaryComponent
+
+                            rows={rows}
+
+                            updateValue={updateValue}
+
+                            section={section}
+
+                        />
+
+                    );
+
+                })()
+            }
         </div>
 
     );

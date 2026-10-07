@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 
 export interface CerapanField {
     name: string;
@@ -44,9 +45,14 @@ export interface CerapanRow {
 }
 
 export interface CerapanSection {
+
     id: string;
+
     title: string;
+
     description?: string;
+
+
     type:
     | "form"
     | "checklist"
@@ -54,21 +60,50 @@ export interface CerapanSection {
     | "table_custom"
     | "info";
 
+
     fields?: CerapanField[];
+
+
     summaryRows?: CerapanRow[];
+
+
     columns?: CerapanColumn[];
+
+
     generator?: CerapanGenerator;
+
+
     calculation?:
     | "BKD"
     | "KESALAHAN"
     | "HASIL"
     | null;
+
+
+    // TAMBAHAN DALAM TABLE
+    additionalComponent?:
+    ComponentType<any>;
+
+
+    // TAMBAHAN SETELAH SUMMARY
+    summaryComponent?:
+    ComponentType<any>;
+
+
+
     items?: {
+
         parameter: string;
+
         kondisi?: string;
+
         keterangan?: string;
+
     }[];
+
+
     rule?: any;
+
 }
 
 

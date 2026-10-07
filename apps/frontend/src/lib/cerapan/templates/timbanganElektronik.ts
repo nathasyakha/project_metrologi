@@ -1,4 +1,7 @@
 import type { CerapanTemplate } from "../types";
+import { CerapanKebenaranTambahan } from "@/components/cerapan/KebenaranTambahan";
+import { CerapanRepeatTambahan } from "@/components/cerapan/repeatTambahan";
+import { CerapanPenyetelanNolTambahan } from "@/components/cerapan/PenyetelanNolTambahan";
 
 
 export const timbanganElektronik: CerapanTemplate = {
@@ -46,6 +49,8 @@ export const timbanganElektronik: CerapanTemplate = {
                 "table",
             generator:
                 "KEBENARAN",
+            additionalComponent:
+                CerapanKebenaranTambahan,
             calculation:
                 "BKD",
             columns: [
@@ -125,6 +130,8 @@ export const timbanganElektronik: CerapanTemplate = {
                 "table",
             generator:
                 "EKSENTRISITAS",
+            additionalComponent:
+                CerapanKebenaranTambahan,
             calculation:
                 "BKD",
             columns: [
@@ -202,6 +209,8 @@ export const timbanganElektronik: CerapanTemplate = {
                 "table",
             generator:
                 "PENYETELAN_NOL",
+            additionalComponent:
+                CerapanPenyetelanNolTambahan,
             columns: [
                 {
                     key:
@@ -376,25 +385,17 @@ export const timbanganElektronik: CerapanTemplate = {
 
 
         {
-
             id:
                 "repeatability",
-
-
             title:
                 "Pengujian Kemampuan Ulang",
-
-
             type:
                 "table",
-
-
             generator:
                 "REPEATABILITY",
-
+            summaryComponent:
+                CerapanRepeatTambahan,
             columns: [
-
-
                 {
                     key: "muatanUji",
                     label: "Muatan Uji (g)",
