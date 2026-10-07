@@ -10,7 +10,7 @@ import { handleRepeatability } from "@/handlers/handleRepeatability";
 import { handleRepeatabilityTambahan } from "@/handlers/handleRepeatabilityTambahan";
 import { handlePenyetelanNol } from "@/handlers/handlePenyetelanNol";
 import { handlePenyetelTara } from "@/handlers/handlePenyetelTara";
-import { handleKebenaran } from "@/handlers/handleKebenaran";
+import { handleKebenaranEksentrisitas } from "@/handlers/handleKebenaranEksentrisitas";
 import { handleUjiTambahan } from "@/handlers/handleUjiTambahan";
 
 interface Props {
@@ -125,7 +125,7 @@ export function CerapanTable({
             "KEBENARAN" ||
             section.generator ===
             "EKSENTRISITAS"
-        ) handleKebenaran({
+        ) handleKebenaranEksentrisitas({
             key,
             updated,
             index

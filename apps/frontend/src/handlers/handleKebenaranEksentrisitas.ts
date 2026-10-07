@@ -4,7 +4,7 @@ import { evaluasiKebenaran } from "@/lib/cerapan/calculator/evaluasiKebenaran";
 
 
 
-export function handleKebenaran({
+export function handleKebenaranEksentrisitas({
 
     key,
 
