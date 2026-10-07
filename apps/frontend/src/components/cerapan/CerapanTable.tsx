@@ -3,12 +3,7 @@
 import { Fragment, useEffect, useState } from "react";
 import type { CerapanSection } from "@/lib/cerapan/types";
 import { CerapanCell } from "./CerapanCell";
-import { handleRepeatability } from "@/handlers/handleRepeatability";
-import { handleRepeatabilityTambahan } from "@/handlers/handleRepeatabilityTambahan";
-import { handlePenyetelanNol } from "@/handlers/handlePenyetelanNol";
-import { handlePenyetelTara } from "@/handlers/handlePenyetelTara";
-import { handleKebenaranEksentrisitas } from "@/handlers/handleKebenaranEksentrisitas";
-import { handleUjiTambahan } from "@/handlers/handleUjiTambahan";
+import { runCerapanHandler } from "@/handlers/registry";
 
 interface Props {
     section: CerapanSection;
@@ -61,61 +56,31 @@ export function CerapanTable({
             [key]: value
         };
 
-        /*
-        ==========================================
-        UJI TAMBAHAN
-        ==========================================
-        */
+        const handled =
+            runCerapanHandler({
 
-        const handledTambahan =
-            handleUjiTambahan({
                 section,
+
                 key,
+
+                value,
+
                 updated,
+
                 index
+
             });
-        if (handledTambahan) {
+
+
+
+        if (handled) {
+
             setRows(updated);
+
             return;
+
         }
 
-        /*
-        ==========================================
-        HANDLER UTAMA
-        ==========================================
-        */
-
-        handlePenyetelanNol({
-            key,
-            value,
-            updated,
-            index
-        });
-
-        handlePenyetelTara({
-            key,
-            updated,
-            index
-        });
-
-        handleRepeatability({
-            key,
-            updated
-        });
-
-        handleRepeatabilityTambahan({
-            key,
-            updated
-        });
-
-        if (
-            section.generator === "KEBENARAN" ||
-            section.generator === "EKSENTRISITAS"
-        ) handleKebenaranEksentrisitas({
-            key,
-            updated,
-            index
-        });
 
         setRows(updated);
     }

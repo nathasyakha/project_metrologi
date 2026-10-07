@@ -81,12 +81,9 @@ export function CerapanRepeatTambahan({
                             P1
                         </td>
                         <td className="p-2 border">
-                            <input
-                                type="number"
-                                className="w-full border rounded p-1 text-sm text-slate-800 focus:outline-none"
-                                value={rows[2]?.penunjukanSebenarnya1 ?? ""}
-                                onChange={(e) => updateValue(2, "penunjukanSebenarnya1", e.target.value)}
-                            />
+                            <div className="w-full bg-slate-100/80 border border-slate-200 rounded p-1 text-sm text-slate-800 text-left min-h-[30px] flex items-center px-2">
+                                {rows[2]?.penunjukanSebenarnya1 ?? ""}
+                            </div>
                         </td>
                     </tr>
 
@@ -120,12 +117,9 @@ export function CerapanRepeatTambahan({
                             P2
                         </td>
                         <td className="p-2 border">
-                            <input
-                                type="number"
-                                className="w-full border rounded p-1 text-sm text-slate-800 focus:outline-none"
-                                value={rows[2]?.penunjukanSebenarnya2 ?? ""}
-                                onChange={(e) => updateValue(2, "penunjukanSebenarnya2", e.target.value)}
-                            />
+                            <div className="w-full bg-slate-100/80 border border-slate-200 rounded p-1 text-sm text-slate-800 text-left min-h-[30px] flex items-center px-2">
+                                {rows[2]?.penunjukanSebenarnya2 ?? ""}
+                            </div>
                         </td>
                     </tr>
 
@@ -159,12 +153,9 @@ export function CerapanRepeatTambahan({
                             P3
                         </td>
                         <td className="p-2 border">
-                            <input
-                                type="number"
-                                className="w-full border rounded p-1 text-sm text-slate-800 focus:outline-none"
-                                value={rows[2]?.penunjukanSebenarnya3 ?? ""}
-                                onChange={(e) => updateValue(2, "penunjukanSebenarnya3", e.target.value)}
-                            />
+                            <div className="w-full bg-slate-100/80 border border-slate-200 rounded p-1 text-sm text-slate-800 text-left min-h-[30px] flex items-center px-2">
+                                {rows[2]?.penunjukanSebenarnya3 ?? ""}
+                            </div>
                         </td>
                     </tr>
                     <tr>
