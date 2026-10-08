@@ -4,6 +4,8 @@ import { generateEksentrisitas } from "./calculator/generateEksentrisitas";
 import { generateRepeatability } from "./calculator/generateRepeatability";
 import { generatePenyetelanNol } from "./calculator/generatePenyetelNol";
 import { generatePenyetelTara } from "./calculator/generatePenyetelTara";
+import { generateRepeatabilityPegas } from "./calculator/generateRepeatabilityPegas";
+import { generateEksentrisitasPegas } from "./calculator/generateEksentrisitasPegas";
 
 
 export function runCerapanGenerator(
@@ -66,6 +68,10 @@ export function runCerapanGenerator(
             return generateKepekaan(input);
         case "REPEATABILITY":
             return generateRepeatability(input);
+        case "REPEATABILITY_PEGAS":
+            return generateRepeatabilityPegas(input);
+        case "EKSENTRISITAS_PEGAS":
+            return generateEksentrisitasPegas(input);
         default:
             return [];
 

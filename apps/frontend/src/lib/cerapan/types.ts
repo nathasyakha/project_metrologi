@@ -120,6 +120,8 @@ export type CerapanGenerator =
     | "KEPEKAAN"
     | "REPEATABILITY"
     | "PENYETELAN_NOL"
-    | "PENYETEL_TARA";
+    | "PENYETEL_TARA"
+    | "REPEATABILITY_PEGAS"
+    | "EKSENTRISITAS_PEGAS";
 
 

@@ -3,6 +3,18 @@ import {
 }
     from "./handleKebenaran";
 
+import {
+    handleKepekaan
+}
+    from "./handleKepekaan";
+
+import {
+    handleRepeatability
+} from "./handleRepeatability";
+
+import {
+    handleEksentrisitas
+} from "./handleEksentrisitas";
 
 
 export function handler(
@@ -23,6 +35,23 @@ export function handler(
                 context
             );
 
+            break;
+        case "KEPEKAAN":
+
+            handleKepekaan(
+                context
+            );
+
+            break;
+        case "REPEATABILITY_PEGAS":
+            handleRepeatability(
+                context
+            );
+            break;
+        case "EKSENTRISITAS_PEGAS":
+            handleEksentrisitas(
+                context
+            );
             break;
 
 

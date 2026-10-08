@@ -40,12 +40,13 @@ export function generateKepekaan(
             nilaiE: data.nilaiE,
             layanan: data.layanan
         });
-    return {
-        muatan,
-        imbuhBKD: bkd,
-        penunjukanAwal: null,
-        penunjukanAkhir: null,
-        perubahan: null,
-        hasil: null
-    };
+    return [
+        {
+            muatanUji: muatan,
+            bkd: bkd,
+            imbuh: "Tambah imbuh sebesar BKD",
+            pengamatan: null,
+            hasil: null
+        }
+    ];
 }

@@ -1,6 +1,4 @@
 import type { CerapanTemplate } from "../types";
-import { CerapanKebenaranTambahan } from "@/components/cerapan/KebenaranTambahan";
-import { CerapanRepeatTambahan } from "@/components/cerapan/repeatTambahan";
 
 
 export const timbanganPegas: CerapanTemplate = {
@@ -99,52 +97,32 @@ export const timbanganPegas: CerapanTemplate = {
                 }
             ]
         },
+
+
         /*
        ======================================
-       EKSENTRISITAS
+       KEPEKAAN
        ======================================
        */
 
 
         {
             id:
-                "eksentrisitas",
+                "kepekaan",
             title:
-                "Pengujian Eksentrisitas",
-            description:
-                "Muatan minimal (1/3 Maks)",
+                "Pengujian Diskriminasi",
             type:
                 "table",
             generator:
-                "EKSENTRISITAS",
-            additionalComponent:
-                CerapanKebenaranTambahan,
+                "KEPEKAAN",
             calculation:
                 "BKD",
             columns: [
                 {
                     key:
-                        "posisiUji",
-                    label:
-                        "Posisi Uji",
-                    type:
-                        "number",
-                    readonly:
-                        true
-                },
-                {
-                    key:
                         "muatanUji",
                     label:
                         "Muatan Uji (g)",
-                    type:
-                        "number"
-                },
-                {
-                    key:
-                        "penunjukan",
-                    label:
-                        "Penunjukan (g)",
                     type:
                         "number"
                 },
@@ -160,13 +138,35 @@ export const timbanganPegas: CerapanTemplate = {
                 },
                 {
                     key:
+                        "imbuh",
+                    label:
+                        "Imbuh",
+                    type:
+                        "text",
+                    readonly:
+                        true
+                },
+                {
+                    key:
                         "pengamatan",
                     label:
                         "Pengamatan Penunjukan",
                     type:
-                        "text",
-                    readonly:
-                        true
+                        "select",
+                    options: [
+                        {
+                            "value": "BERGERAK",
+                            "label": "Berubah minimal 0,7 BKD"
+                        },
+                        {
+                            "value": "TIDAK_BERGERAK",
+                            "label": "Tidak bergerak"
+                        },
+                        {
+                            "value": "KURANG",
+                            "label": "Bergerak kurang dari 0,7 BKD"
+                        }
+                    ]
                 },
                 {
                     key:
@@ -181,130 +181,6 @@ export const timbanganPegas: CerapanTemplate = {
             ]
         },
 
-        /*
-               ======================================
-               Penyetelan Tara
-               ======================================
-               */
-
-
-        {
-            id:
-                "penyetel_tara",
-            title:
-                "Pengujian Penyetel Tara",
-            type:
-                "table",
-            generator:
-                "PENYETEL_TARA",
-            columns: [
-                {
-                    key:
-                        "langkah",
-                    label:
-                        "ATS sekitar 20% Max (g)",
-                    type:
-                        "text",
-                    readonly:
-                        true
-                },
-                {
-                    key:
-                        "tekanTara",
-                    label:
-                        "Tekan TARA",
-                    type:
-                        "number",
-                    readonly:
-                        true
-
-                },
-                {
-                    key:
-                        "imbuh10e",
-                    label:
-                        "+ Imbuh 10e (g)",
-                    type:
-                        "number",
-                    readonly:
-                        true
-                },
-                {
-                    key:
-                        "penunjukan10e",
-                    label:
-                        "Penunjukan (g)",
-                    type:
-                        "number"
-                },
-                {
-                    key:
-                        "imbuh025e",
-                    label:
-                        "+ Imbuh 0,25e (g)",
-                    type:
-                        "number",
-                    readonly:
-                        true
-                },
-                {
-                    key:
-                        "penunjukan025e",
-                    label:
-                        "Penunjukan (g)",
-                    type:
-                        "number"
-                },
-                {
-                    key:
-                        "pengamatan025e",
-                    label:
-                        "Pengamatan",
-                    type:
-                        "text",
-                    readonly:
-                        true
-                },
-                {
-                    key:
-                        "imbuh05e",
-                    label:
-                        "+ Imbuh 0,5e (g)",
-                    type:
-                        "number",
-                    readonly:
-                        true
-                },
-                {
-                    key:
-                        "penunjukan05e",
-                    label:
-                        "Penunjukan (g)",
-                    type:
-                        "number"
-                },
-                {
-                    key:
-                        "pengamatan05e",
-                    label:
-                        "Pengamatan",
-                    type:
-                        "text",
-                    readonly:
-                        true
-                },
-                {
-                    key:
-                        "hasil",
-                    label:
-                        "Hasil",
-                    type:
-                        "text",
-                    readonly:
-                        true
-                }
-            ]
-        },
 
         /*
         ======================================
@@ -316,20 +192,47 @@ export const timbanganPegas: CerapanTemplate = {
         {
             id:
                 "repeatability",
+
             title:
                 "Pengujian Kemampuan Ulang",
+
             type:
                 "table",
+
             generator:
-                "REPEATABILITY",
-            summaryComponent:
-                CerapanRepeatTambahan,
+                "REPEATABILITY_PEGAS",
+
+
             columns: [
+
+
                 {
-                    key: "muatanUji",
-                    label: "Muatan Uji (g)",
-                    type: "number",
+                    key:
+                        "nomor",
+
+                    label:
+                        "No",
+
+                    type:
+                        "number",
+
+                    readonly:
+                        true
                 },
+
+
+                {
+                    key:
+                        "muatanUji",
+
+                    label:
+                        "Muatan Uji (g)",
+
+                    type:
+                        "number",
+                },
+
+
                 {
                     key:
                         "penunjukan",
@@ -338,43 +241,25 @@ export const timbanganPegas: CerapanTemplate = {
                         "Penunjukan (g)",
 
                     type:
-                        "number",
+                        "number"
                 },
+
+
                 {
                     key:
-                        "penunjukanSetelahImbuh",
+                        "bkd",
 
                     label:
-                        "+ Imbuh 0,5e (g)",
+                        "BKD (g)",
 
                     type:
                         "number",
-                },
-                {
-                    key:
-                        "pengamatan05e",
-
-                    label:
-                        "Pengamatan",
-
-                    type:
-                        "text",
 
                     readonly:
                         true
                 },
-                {
-                    key:
-                        "penunjukan2",
 
-                    label:
-                        "Penunjukan (g)",
-
-                    type:
-                        "number"
-                },
             ],
-
             summaryRows: [
                 {
                     key:
@@ -404,6 +289,84 @@ export const timbanganPegas: CerapanTemplate = {
                 }
             ]
 
+
+        },
+        /*
+      ======================================
+      EKSENTRISITAS
+      ======================================
+      */
+
+
+        {
+            id:
+                "eksentrisitas",
+            title:
+                "Pengujian Eksentrisitas",
+            type:
+                "table",
+            generator:
+                "EKSENTRISITAS_PEGAS",
+            calculation:
+                "BKD",
+            columns: [
+                {
+                    key:
+                        "posisiUji",
+                    label:
+                        "Posisi Uji",
+                    type:
+                        "number",
+                    readonly:
+                        true
+                },
+                {
+                    key:
+                        "muatanUji",
+                    label:
+                        "Muatan Uji (g)",
+                    type:
+                        "number"
+                },
+                {
+                    key:
+                        "bkd",
+                    label:
+                        "BKD (g)",
+                    type:
+                        "number",
+                    readonly:
+                        true
+                },
+                {
+                    key:
+                        "pengamatan",
+                    label:
+                        "Pengamatan Penunjukan",
+                    type:
+                        "select",
+                    options: [
+                        {
+                            "value": "SAH",
+                            "label": "Kesalahan penunjukkan tidak melebihi BKD"
+                        },
+                        {
+                            "value": "BATAL",
+                            "label": "Kesalahan penunjukkan melebihi BKD"
+                        }
+                    ]
+                },
+                {
+                    key:
+                        "hasil",
+                    label:
+                        "Hasil",
+                    type:
+                        "text",
+                    readonly:
+                        true
+                }
+            ]
         },
 
     ],
