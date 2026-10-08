@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import type { CerapanSection, CerapanTemplate } from "@/lib/cerapan/types";
 import { CerapanCell } from "./CerapanCell";
 import { runCerapanHandler } from "@/handlers/registry";
+import { evaluasiKesimpulan } from "@/lib/cerapan/calculator/evaluasiKesimpulan";
 
 interface Props {
     template: CerapanTemplate;
@@ -21,6 +22,8 @@ export function CerapanTable({
         setRows
     ] = useState<any[]>(data);
 
+    const kesimpulan =
+        evaluasiKesimpulan(rows);
 
     /*
      * ==========================================
@@ -439,6 +442,58 @@ export function CerapanTable({
 
                 })()
             }
+
+            <div className="
+    mt-4
+    border
+    rounded-lg
+    overflow-hidden
+">
+
+
+                <div className="
+        flex
+        text-sm
+    ">
+
+
+                    <div className="
+            w-1/2
+            px-3
+            py-2
+            bg-slate-100
+            font-semibold
+        ">
+                        Kesimpulan
+                    </div>
+
+
+                    <div
+                        className={`
+                w-1/2
+                px-3
+                py-2
+                text-center
+                font-semibold
+
+                ${kesimpulan === "SAH"
+                                ?
+                                "text-green-600"
+                                :
+                                "text-red-600"
+                            }
+            `}
+                    >
+
+                        {kesimpulan}
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
         </div>
 
     );
