@@ -1,4 +1,5 @@
-import { handler as handlerTimbanganElektronik } from "./timbanganElektronik";
+import { handler as timbanganElektronik } from "./timbanganElektronik";
+import { handler as timbanganPegas } from "./timbanganPegas";
 
 
 
@@ -7,21 +8,30 @@ export function runCerapanHandler(
 ) {
 
     const jenisAlat =
-        context.template.jenisAlat;
+        context.template?.jenisAlat;
 
 
+    switch (jenisAlat) {
 
-    if (
-        jenisAlat === "TIMBANGAN_ELEKTRONIK"
-    ) {
 
-        return handlerTimbanganElektronik(
-            context
-        );
+        case "TIMBANGAN_ELEKTRONIK":
+
+            return timbanganElektronik(
+                context
+            );
+
+
+        case "TIMBANGAN_PEGAS":
+
+            return timbanganPegas(
+                context
+            );
+
+
+        default:
+
+            return false;
 
     }
-
-
-    return false;
 
 }

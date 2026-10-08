@@ -12,9 +12,7 @@ interface Props {
 
 
 export function CerapanRepeatTambahan({
-
     rows,
-
     updateValue
 
 }: Props) {
@@ -57,8 +55,8 @@ export function CerapanRepeatTambahan({
                             <input
                                 type="number"
                                 className="w-full border rounded p-1 text-sm text-slate-800 focus:outline-none"
-                                value={rows[2]?.muatanUji ?? ""}
-                                onChange={(e) => updateValue(2, "muatanUji", e.target.value)}
+                                value={rows[2]?.muatanUjiTambahan ?? ""}
+                                onChange={(e) => updateValue(2, "muatanUjiTambahan", e.target.value)}
                             />
                         </td>
                         <td className="p-2 border">
@@ -93,8 +91,8 @@ export function CerapanRepeatTambahan({
                             <input
                                 type="number"
                                 className="w-full border rounded p-1 text-sm text-slate-800 focus:outline-none"
-                                value={rows[2]?.muatanUji ?? ""}
-                                onChange={(e) => updateValue(2, "muatanUji", e.target.value)}
+                                value={rows[2]?.muatanUjiTambahan ?? ""}
+                                onChange={(e) => updateValue(2, "muatanUjiTambahan", e.target.value)}
                             />
                         </td>
                         <td className="p-2 border">
@@ -129,8 +127,8 @@ export function CerapanRepeatTambahan({
                             <input
                                 type="number"
                                 className="w-full border rounded p-1 text-sm text-slate-800 focus:outline-none"
-                                value={rows[2]?.muatanUji ?? ""}
-                                onChange={(e) => updateValue(2, "muatanUji", e.target.value)}
+                                value={rows[2]?.muatanUjiTambahan ?? ""}
+                                onChange={(e) => updateValue(2, "muatanUjiTambahan", e.target.value)}
                             />
                         </td>
                         <td className="p-2 border">

@@ -101,13 +101,12 @@ export function generateRepeatability(
                 data.layanan,
 
             /*
-                =====================
-                TAMBAHAN REPEAT
-                =====================
-                */
+            =====================
+            TAMBAHAN REPEAT
+            =====================
+            */
 
             perluUjiTambahan: false,
-
             tampilTambahan: false,
 
 
@@ -170,7 +169,7 @@ export function generateRepeatability(
 
             layanan:
                 data.layanan,
-
+            muatanUjiTambahan: titikTengah,
 
             repeat:
                 null,

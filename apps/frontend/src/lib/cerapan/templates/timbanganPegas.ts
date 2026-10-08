@@ -66,14 +66,6 @@ export const timbanganPegas: CerapanTemplate = {
                 },
                 {
                     key:
-                        "penunjukan",
-                    label:
-                        "Penunjukan (g)",
-                    type:
-                        "number"
-                },
-                {
-                    key:
                         "bkd",
                     label:
                         "BKD (g)",
