@@ -1,5 +1,5 @@
 import { findBKDRule } from "../../rules/findBKDRules";
-import { hitungBKD } from "./hitungBKD";
+import { hitungBKD } from "../../calculator/common/hitungBKD";
 import { hitungRentangBKD } from "../../rules/hitungBKDTengah";
 import { hitungTitikTengah } from "./getTitikInterval";
 
