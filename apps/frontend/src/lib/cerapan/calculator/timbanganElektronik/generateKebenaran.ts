@@ -1,7 +1,7 @@
-import { hitungBKD } from "./hitungBKD";
-import { findBKDRule } from "../rules/findBKDRules";
-import { hitungBatasBawah, hitungBatasAtas } from "./hitungInterval";
-import { hitungTitikTengah } from "./getTitikInterval";
+import { hitungBKD } from "../common/hitungBKD";
+import { findBKDRule } from "../../rules/findBKDRules";
+import { hitungBatasBawah, hitungBatasAtas } from "../common/hitungInterval";
+import { hitungTitikTengah } from "../common/getTitikInterval";
 
 interface Input {
     jenisAlat: string;

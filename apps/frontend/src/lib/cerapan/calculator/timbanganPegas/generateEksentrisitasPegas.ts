@@ -1,10 +1,10 @@
 import {
     findBKDRule
-} from "../rules/findBKDRules";
+} from "../../rules/findBKDRules";
 
 import {
     hitungBKD
-} from "./hitungBKD";
+} from "../common/hitungBKD";
 
 
 interface Input {

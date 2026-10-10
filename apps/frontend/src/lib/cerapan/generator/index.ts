@@ -1,8 +1,8 @@
-import { generateKebenaran } from "../calculator/generateKebenaran";
-import { generateKepekaan } from "../calculator/generateKepekaan";
-import { generateRepeatability } from "../calculator/generateRepeatability.ts";
-import { generateEksentrisitas } from "../calculator/generateEksentrisitas";
-import { generatePenyetelanNol } from "../calculator/generatePenyetelNol";
+import { generateKebenaran } from "../calculator/timbanganElektronik/generateKebenaran.ts";
+import { generateKepekaan } from "../calculator/timbanganPegas/generateKepekaan.ts";
+import { generateRepeatability } from "../calculator/timbanganElektronik/generateRepeatability.ts";
+import { generateEksentrisitas } from "../calculator/timbanganElektronik/generateEksentrisitas.ts";
+import { generatePenyetelanNol } from "../calculator/timbanganElektronik/generatePenyetelNol.ts";
 
 
 

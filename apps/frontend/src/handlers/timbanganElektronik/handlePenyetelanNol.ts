@@ -1,5 +1,5 @@
-import { evaluasiJenisPenyetelNol } from "@/lib/cerapan/calculator/evaluasiJenisPenyetelNol";
-import { evaluasiPenyetelanNol } from "@/lib/cerapan/calculator/evaluasiPenyetelNol";
+import { evaluasiJenisPenyetelNol } from "@/lib/cerapan/calculator/timbanganElektronik/evaluasiJenisPenyetelNol";
+import { evaluasiPenyetelanNol } from "@/lib/cerapan/calculator/timbanganElektronik/evaluasiPenyetelNol";
 import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function handlePenyetelanNol({

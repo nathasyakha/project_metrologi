@@ -1,5 +1,5 @@
-import { findBKDRule } from "../rules/findBKDRules";
-import { hitungBKD } from "./hitungBKD";
+import { findBKDRule } from "../../rules/findBKDRules";
+import { hitungBKD } from "../common/hitungBKD";
 
 interface Input {
     jenisAlat: string;

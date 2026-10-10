@@ -1,6 +1,6 @@
 import type {
     BKDRule
-} from "../rules/bkdRules";
+} from "../../rules/bkdRules";
 
 
 export function hitungBKD({

@@ -1,4 +1,4 @@
-import { evaluasiPenyetelTara } from "@/lib/cerapan/calculator/evaluasiPenyetelTara";
+import { evaluasiPenyetelTara } from "@/lib/cerapan/calculator/timbanganElektronik/evaluasiPenyetelTara";
 import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function handlePenyetelTara({

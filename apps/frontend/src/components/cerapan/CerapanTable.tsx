@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import type { CerapanSection, CerapanTemplate } from "@/lib/cerapan/types";
 import { CerapanCell } from "./CerapanCell";
 import { runCerapanHandler } from "@/handlers/registry";
-import { evaluasiKesimpulan } from "@/lib/cerapan/calculator/evaluasiKesimpulan";
+import { evaluasiKesimpulan } from "@/lib/cerapan/calculator/global/evaluasiKesimpulan";
 
 interface Props {
     template: CerapanTemplate;

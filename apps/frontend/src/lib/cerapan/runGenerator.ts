@@ -1,11 +1,11 @@
-import { generateKebenaran } from "./calculator/generateKebenaran";
-import { generateKepekaan } from "./calculator/generateKepekaan";
-import { generateEksentrisitas } from "./calculator/generateEksentrisitas";
-import { generateRepeatability } from "./calculator/generateRepeatability";
-import { generatePenyetelanNol } from "./calculator/generatePenyetelNol";
-import { generatePenyetelTara } from "./calculator/generatePenyetelTara";
-import { generateRepeatabilityPegas } from "./calculator/generateRepeatabilityPegas";
-import { generateEksentrisitasPegas } from "./calculator/generateEksentrisitasPegas";
+import { generateKebenaran } from "./calculator/timbanganElektronik/generateKebenaran";
+import { generateKepekaan } from "./calculator/timbanganPegas/generateKepekaan";
+import { generateEksentrisitas } from "./calculator/timbanganElektronik/generateEksentrisitas";
+import { generateRepeatability } from "./calculator/timbanganElektronik/generateRepeatability";
+import { generatePenyetelanNol } from "./calculator/timbanganElektronik/generatePenyetelNol";
+import { generatePenyetelTara } from "./calculator/timbanganElektronik/generatePenyetelTara";
+import { generateRepeatabilityPegas } from "./calculator/timbanganPegas/generateRepeatabilityPegas";
+import { generateEksentrisitasPegas } from "./calculator/timbanganPegas/generateEksentrisitasPegas";
 
 
 export function runCerapanGenerator(

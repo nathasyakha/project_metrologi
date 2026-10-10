@@ -1,6 +1,6 @@
 import {
     hitungKapasitasMinimum
-} from "./calculator/hitungKapasitasMinimum";
+} from "./calculator/common/hitungKapasitasMinimum";
 
 
 export function mapInstrument(item: any) {

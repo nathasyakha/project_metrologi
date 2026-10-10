@@ -1,6 +1,6 @@
-import { findBKDRule } from "../rules/findBKDRules";
+import { findBKDRule } from "../../rules/findBKDRules";
 import { hitungBKD } from "./hitungBKD";
-import { hitungRentangBKD } from "../rules/hitungBKDTengah";
+import { hitungRentangBKD } from "../../rules/hitungBKDTengah";
 import { hitungTitikTengah } from "./getTitikInterval";
 
 

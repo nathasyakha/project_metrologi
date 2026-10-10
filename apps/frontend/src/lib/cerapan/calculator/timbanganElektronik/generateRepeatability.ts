@@ -1,7 +1,7 @@
-import { hitungTitikTengah } from "./getTitikInterval";
-import { hitungBatasBawah } from "./hitungInterval";
-import { hitungBatasAtas } from "./hitungInterval";
-import { findBKDRule } from "../rules/findBKDRules";
+import { hitungTitikTengah } from "../common/getTitikInterval";
+import { hitungBatasBawah } from "../common/hitungInterval";
+import { hitungBatasAtas } from "../common/hitungInterval";
+import { findBKDRule } from "../../rules/findBKDRules";
 
 export interface InputRepeatability {
 

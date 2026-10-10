@@ -1,6 +1,6 @@
-import { hitungBKD } from "@/lib/cerapan/calculator/hitungBKD";
+import { hitungBKD } from "@/lib/cerapan/calculator/common/hitungBKD";
 import { findBKDRule } from "@/lib/cerapan/rules/findBKDRules";
-import { evaluasiKebenaran } from "@/lib/cerapan/calculator/evaluasiKebenaran";
+import { evaluasiKebenaran } from "@/lib/cerapan/calculator/timbanganElektronik/evaluasiKebenaran";
 import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function handleKebenaranEksentrisitas({
