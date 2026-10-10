@@ -6,6 +6,10 @@ import { generatePenyetelanNol } from "./calculator/timbanganElektronik/generate
 import { generatePenyetelTara } from "./calculator/timbanganElektronik/generatePenyetelTara";
 import { generateRepeatabilityPegas } from "./calculator/timbanganPegas/generateRepeatabilityPegas";
 import { generateEksentrisitasPegas } from "./calculator/timbanganPegas/generateEksentrisitasPegas";
+import { generateKebenaranMeja } from "./calculator/timbanganMeja/generateKebenaranMeja";
+import { generateEksentrisitasMeja } from "./calculator/timbanganMeja/generateEksentrisitasMeja";
+import { generateKepekaanMeja } from "./calculator/timbanganMeja/generateKepekaanMeja";
+import { generateRepeatabilityMeja } from "./calculator/timbanganMeja/generateRepeatabilityMeja";
 
 
 export function runCerapanGenerator(
@@ -72,6 +76,14 @@ export function runCerapanGenerator(
             return generateRepeatabilityPegas(input);
         case "EKSENTRISITAS_PEGAS":
             return generateEksentrisitasPegas(input);
+        case "KEBENARAN_MEJA":
+            return generateKebenaranMeja(input);
+        case "EKSENTRISITAS_MEJA":
+            return generateEksentrisitasMeja(input);
+        case "KEPEKAAN_MEJA":
+            return generateKepekaanMeja(input);
+        case "REPEATABILITY_MEJA":
+            return generateRepeatabilityMeja(input);
         default:
             return [];
 

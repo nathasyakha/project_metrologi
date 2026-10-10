@@ -212,6 +212,7 @@ export function CerapanCell({
                 column.type === "select" ? (
                     <select className="border border-slate-300 rounded px-2 py-1.5 w-full"
                         value={value ?? ""}
+                        disabled={column.disabledWhen ? column.disabledWhen(row) : false}
                         onChange={(e) => {
 
                             updateValue(

@@ -26,7 +26,9 @@ export function findBKDRule(
 
         &&
 
-        rule.pengujian === input.pengujian
+        rule.pengujian.includes(
+            input.pengujian
+        )
 
     );
 

@@ -7,13 +7,7 @@ export interface BKDLimit {
 export interface BKDRule {
     jenisAlat: string[];
     kelas: string,
-    pengujian:
-    | "KEBENARAN"
-    | "EKSENTRISITAS"
-    | "KEPEKAAN"
-    | "REPEATABILITY"
-    | "PENYETEL_NOL"
-    | "PENYETEL_TARA";
+    pengujian: string[];
     limits: BKDLimit[];
 }
 
@@ -27,7 +21,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "I",
-        pengujian: "KEBENARAN",
+        pengujian: ["KEBENARAN"],
         limits: [
             {
                 minE: 0,
@@ -55,7 +49,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "II",
-        pengujian: "KEBENARAN",
+        pengujian: ["KEBENARAN"],
         limits: [
             {
                 minE: 0,
@@ -83,7 +77,32 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "III",
-        pengujian: "KEBENARAN",
+        pengujian: ["KEBENARAN"],
+        limits: [
+            {
+                minE: 0,
+                maxE: 500,
+                faktorBKD: 0.5
+            },
+            {
+                minE: 501,
+                maxE: 2000,
+                faktorBKD: 1
+            },
+            {
+                minE: 2001,
+                maxE: 10000,
+                faktorBKD: 1.5
+            }
+        ]
+    },
+    {
+        jenisAlat: [
+            "TIMBANGAN_MEJA",
+            "DACIN",
+        ],
+        kelas: "III",
+        pengujian: ["KEBENARAN_MEJA", "KEBENARAN_DACIN"],
         limits: [
             {
                 minE: 0,
@@ -111,7 +130,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "IIII",
-        pengujian: "KEBENARAN",
+        pengujian: ["KEBENARAN"],
         limits: [
             {
                 minE: 0,
@@ -139,7 +158,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "I",
-        pengujian: "EKSENTRISITAS",
+        pengujian: ["EKSENTRISITAS"],
         limits: [
             {
                 minE: 0,
@@ -167,7 +186,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "II",
-        pengujian: "EKSENTRISITAS",
+        pengujian: ["EKSENTRISITAS"],
         limits: [
             {
                 minE: 0,
@@ -195,7 +214,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "III",
-        pengujian: "EKSENTRISITAS",
+        pengujian: ["EKSENTRISITAS"],
         limits: [
             {
                 minE: 0,
@@ -223,7 +242,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "IIII",
-        pengujian: "EKSENTRISITAS",
+        pengujian: ["EKSENTRISITAS"],
         limits: [
             {
                 minE: 0,
@@ -251,7 +270,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "I",
-        pengujian: "REPEATABILITY",
+        pengujian: ["REPEATABILITY"],
         limits: [
             {
                 minE: 0,
@@ -279,7 +298,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "II",
-        pengujian: "REPEATABILITY",
+        pengujian: ["REPEATABILITY"],
         limits: [
             {
                 minE: 0,
@@ -307,7 +326,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "III",
-        pengujian: "REPEATABILITY",
+        pengujian: ["REPEATABILITY"],
         limits: [
             {
                 minE: 0,
@@ -335,7 +354,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "IIII",
-        pengujian: "REPEATABILITY",
+        pengujian: ["REPEATABILITY"],
         limits: [
             {
                 minE: 0,
@@ -360,7 +379,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "I",
-        pengujian: "PENYETEL_NOL",
+        pengujian: ["PENYETEL_NOL"],
         limits: [
             {
                 minE: 0,
@@ -385,7 +404,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "II",
-        pengujian: "PENYETEL_NOL",
+        pengujian: ["PENYETEL_NOL"],
         limits: [
             {
                 minE: 0,
@@ -410,7 +429,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "III",
-        pengujian: "PENYETEL_NOL",
+        pengujian: ["PENYETEL_NOL"],
         limits: [
             {
                 minE: 0,
@@ -435,7 +454,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "IIII",
-        pengujian: "PENYETEL_NOL",
+        pengujian: ["PENYETEL_NOL"],
         limits: [
             {
                 minE: 0,
@@ -460,7 +479,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "I",
-        pengujian: "PENYETEL_TARA",
+        pengujian: ["PENYETEL_TARA"],
         limits: [
             {
                 minE: 0,
@@ -485,7 +504,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "II",
-        pengujian: "PENYETEL_TARA",
+        pengujian: ["PENYETEL_TARA"],
         limits: [
             {
                 minE: 0,
@@ -510,7 +529,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "III",
-        pengujian: "PENYETEL_TARA",
+        pengujian: ["PENYETEL_TARA"],
         limits: [
             {
                 minE: 0,
@@ -535,7 +554,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "IIII",
-        pengujian: "PENYETEL_TARA",
+        pengujian: ["PENYETEL_TARA"],
         limits: [
             {
                 minE: 0,
@@ -561,7 +580,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_BOBOT_INGSUT"
         ],
         kelas: "I",
-        pengujian: "KEPEKAAN",
+        pengujian: ["KEPEKAAN"],
         limits: [
             {
                 minE: 0,
@@ -587,7 +606,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_BOBOT_INGSUT"
         ],
         kelas: "II",
-        pengujian: "KEPEKAAN",
+        pengujian: ["KEPEKAAN"],
         limits: [
             {
                 minE: 0,
@@ -613,7 +632,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_BOBOT_INGSUT"
         ],
         kelas: "III",
-        pengujian: "KEPEKAAN",
+        pengujian: ["KEPEKAAN"],
         limits: [
             {
                 minE: 0,
@@ -639,7 +658,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_BOBOT_INGSUT"
         ],
         kelas: "IIII",
-        pengujian: "KEPEKAAN",
+        pengujian: ["KEPEKAAN"],
         limits: [
             {
                 minE: 0,

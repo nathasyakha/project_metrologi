@@ -1,11 +1,6 @@
 import {
-    findBKDRule
-} from "../../rules/findBKDRules";
-
-
-import {
-    hitungBKD
-} from "../common/hitungBKD";
+    hitungBKDMeja
+} from "./hitungBKDMeja";
 
 
 interface Input {
@@ -31,128 +26,84 @@ export function generateKebenaranMeja(
 ) {
 
 
-    const rule =
-        findBKDRule({
+    /*
+    =============================
+    MUATAN UJI
+    TIMBANGAN MEJA
 
-            jenisAlat:
-                data.jenisAlat,
+    Menggunakan kapasitas maksimum
 
-            kelas:
-                data.kelas,
+    =============================
+    */
 
-            pengujian:
-                "KEBENARAN"
+
+    const muatanUji =
+        data.kapasitasMaksimum;
+
+
+
+    const bkd =
+        hitungBKDMeja({
+
+            kapasitasMaksimum:
+                data.kapasitasMaksimum,
+
+            muatanUji:
+                muatanUji
 
         });
 
 
 
-    if (!rule) {
-
-        throw new Error(
-            "Rule kebenaran timbangan meja tidak ditemukan"
-        );
-
-    }
-
-
-
-    /*
-    =============================
-    TITIK PENGUJIAN
-    =============================
-    */
-
-    const titikUji = [
+    return [
 
         {
-            nama:
-                "Minimum",
+            lantaiAT: muatanUji,
 
-            muatan:
-                data.nilaiE
-        },
+            tembor:
+                muatanUji,
 
 
-        {
-            nama:
-                "Tengah",
-
-            muatan:
-                data.kapasitasMaksimum / 2
-        },
-
-
-        {
-            nama:
-                "Maksimum",
-
-            muatan:
-                data.kapasitasMaksimum
-        }
-
-    ];
-
-
-
-    return titikUji.map(
-
-        (item, index) => {
-
-
-            const bkd =
-                hitungBKD({
-
-                    rule,
-
-                    titikUji:
-                        item.muatan,
-
-                    nilaiE:
-                        data.nilaiE,
-
-                    layanan:
-                        data.layanan
-
-                });
-
-
-
-            return {
-
-                nomor:
-                    index + 1,
-
-
-                titikUji:
-                    item.nama,
-
-
-                muatanUji:
-                    item.muatan,
-
-
-                bkd:
-                    bkd !== null
-                        ?
-                        Number(
-                            bkd.toFixed(3)
-                        )
-                        :
-                        null,
-
-
-                pengamatan:
+            bkd:
+                bkd !== null
+                    ?
+                    Number(
+                        bkd.toFixed(3)
+                    )
+                    :
                     null,
 
 
-                hasil:
-                    null
+            pengamatan:
+                null,
 
-            };
+
+            hasil:
+                null,
+
+            /*
+            ======================
+            UJI TAMBAHAN
+            ======================
+            */
+
+            perluImbuh:
+                false,
+
+
+            imbuh:
+                null,
+
+
+            pengamatanSetelahImbuh:
+                null,
+
+
+            hasilSetelahImbuh:
+                null
 
         }
 
-    );
+    ];
 
 }

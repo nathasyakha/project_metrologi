@@ -28,6 +28,7 @@ export interface CerapanColumn {
     | "select";
     readonly?: boolean;
     options?: CerapanOption[];
+    disabledWhen?: (row: any) => boolean;
 }
 
 export interface CerapanRow {
@@ -123,6 +124,9 @@ export type CerapanGenerator =
     | "PENYETEL_TARA"
     | "REPEATABILITY_PEGAS"
     | "EKSENTRISITAS_PEGAS"
-    | "KEBENARAN_MEJA";
+    | "KEBENARAN_MEJA"
+    | "EKSENTRISITAS_MEJA"
+    | "KEPEKAAN_MEJA"
+    | "REPEATABILITY_MEJA";
 
 

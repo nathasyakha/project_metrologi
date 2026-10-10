@@ -1,5 +1,6 @@
 import { handler as timbanganElektronik } from "./timbanganElektronik";
 import { handler as timbanganPegas } from "./timbanganPegas";
+import { handler as timbanganMeja } from "./timbanganMeja";
 
 
 
@@ -27,6 +28,11 @@ export function runCerapanHandler(
                 context
             );
 
+        case "TIMBANGAN_MEJA":
+
+            return timbanganMeja(
+                context
+            );
 
         default:
 
