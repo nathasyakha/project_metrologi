@@ -21,7 +21,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "I",
-        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN"],
+        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN", "KEMIRINGAN", "KEBENARAN_GANDAR"],
         limits: [
             {
                 minE: 0,
@@ -49,7 +49,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "II",
-        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN"],
+        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN", "KEMIRINGAN", "KEBENARAN_GANDAR"],
         limits: [
             {
                 minE: 0,
@@ -77,7 +77,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "III",
-        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN"],
+        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN", "KEMIRINGAN", "KEBENARAN_GANDAR"],
         limits: [
             {
                 minE: 0,
@@ -105,7 +105,7 @@ export const bkdRules: BKDRule[] = [
             "TIMBANGAN_JEMBATAN"
         ],
         kelas: "IIII",
-        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN"],
+        pengujian: ["KEBENARAN", "EKSENTRISITAS", "REPEATABILITY", "KEPEKAAN", "KEMIRINGAN", "KEBENARAN_GANDAR"],
         limits: [
             {
                 minE: 0,

@@ -86,24 +86,11 @@ export function generateKebenaranMeja(
             UJI TAMBAHAN
             ======================
             */
-
-            perluImbuh:
-                false,
-
-
             imbuh:
                 null,
-
-
             pengamatanSetelahImbuh:
-                null,
-
-
-            hasilSetelahImbuh:
                 null
-
         }
-
     ];
 
 }

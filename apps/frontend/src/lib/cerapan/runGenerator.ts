@@ -10,6 +10,13 @@ import { generateKebenaranMeja } from "./calculator/timbanganMeja/generateKebena
 import { generateEksentrisitasMeja } from "./calculator/timbanganMeja/generateEksentrisitasMeja";
 import { generateKepekaanMeja } from "./calculator/timbanganMeja/generateKepekaanMeja";
 import { generateRepeatabilityMeja } from "./calculator/timbanganMeja/generateRepeatabilityMeja";
+import { generateKebenaranSentisimal } from "./calculator/timbanganSentisimal/generateKebenaranSentisimal";
+import { generateKepekaanSentisimal } from "./calculator/timbanganSentisimal/generateKepekaanSentisimal";
+import { generateEksentrisitasSentisimal } from "./calculator/timbanganSentisimal/generateEksentrisitasSentisimal";
+import { generateRepeatabilitySentisimal } from "./calculator/timbanganSentisimal/generateRepeatabilitySentisimal";
+import { generateKemiringanSentisimal } from "./calculator/timbanganSentisimal/generateKemiringanSentisimal";
+import { generateKebenaranGandar } from "./calculator/timbanganSentisimal/generateKebenaranGandar";
+import { generateAnakTimbangan } from "./calculator/anakTimbangan/generateAnakTimbangan";
 
 
 export function runCerapanGenerator(
@@ -84,6 +91,20 @@ export function runCerapanGenerator(
             return generateKepekaanMeja(input);
         case "REPEATABILITY_MEJA":
             return generateRepeatabilityMeja(input);
+        case "KEBENARAN_SENTISIMAL":
+            return generateKebenaranSentisimal(input);
+        case "KEPEKAAN_SENTISIMAL":
+            return generateKepekaanSentisimal(input);
+        case "REPEATABILITY_SENTISIMAL":
+            return generateRepeatabilitySentisimal(input);
+        case "EKSENTRISITAS_SENTISIMAL":
+            return generateEksentrisitasSentisimal(input);
+        case "KEMIRINGAN_SENTISIMAL":
+            return generateKemiringanSentisimal(input);
+        case "KEBENARAN_GANDAR_SENTISIMAL":
+            return generateKebenaranGandar(input);
+        case "ANAK_TIMBANGAN_PERLENGKAPAN":
+            return generateAnakTimbangan(input);
         default:
             return [];
 

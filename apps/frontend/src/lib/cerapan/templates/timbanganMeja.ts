@@ -397,6 +397,122 @@ export const timbanganMeja: CerapanTemplate = {
                 },
             ]
         },
+        /*
+       ======================================
+       PENGUJIAN ANAK TIMBANGAN
+       ======================================
+       */
+
+        {
+            id:
+                "anak_timbangan",
+
+            title:
+                "Pengujian Anak Timbangan Perlengkapan",
+
+            type:
+                "table",
+
+            generator:
+                "ANAK_TIMBANGAN_PERLENGKAPAN",
+
+            columns: [
+
+                {
+                    key:
+                        "kelas",
+
+                    label:
+                        "Kelas",
+
+                    type:
+                        "text",
+
+                    readonly:
+                        true
+                },
+
+
+                {
+                    key:
+                        "nominal",
+
+                    label:
+                        "Nominal (g)",
+
+                    type:
+                        "number",
+
+                    readonly:
+                        true
+                },
+
+
+                {
+                    key:
+                        "bkd",
+
+                    label:
+                        "BKD (g)",
+
+                    type:
+                        "number",
+
+                    readonly:
+                        true
+                },
+
+
+                {
+                    key:
+                        "pengamatan",
+
+                    label:
+                        "Pengamatan",
+
+                    type:
+                        "select",
+
+                    options: [
+
+                        {
+                            value:
+                                "SAH",
+
+                            label:
+                                "SAH"
+                        },
+
+
+                        {
+                            value:
+                                "BATAL",
+
+                            label:
+                                "BATAL"
+                        }
+
+                    ]
+
+                },
+
+
+                {
+                    key:
+                        "hasil",
+
+                    label:
+                        "Hasil",
+
+                    type:
+                        "text",
+
+                    readonly:
+                        true
+                }
+
+            ]
+        }
 
     ],
 

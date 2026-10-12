@@ -1,6 +1,7 @@
 import { handler as timbanganElektronik } from "./timbanganElektronik";
 import { handler as timbanganPegas } from "./timbanganPegas";
 import { handler as timbanganMeja } from "./timbanganMeja";
+import { handler as timbanganSentisimal } from "./timbanganSentisimal";
 
 
 
@@ -33,6 +34,12 @@ export function runCerapanHandler(
             return timbanganMeja(
                 context
             );
+        case "TIMBANGAN_SENTISIMAL":
+
+            return timbanganSentisimal(
+                context
+            );
+
 
         default:
 
