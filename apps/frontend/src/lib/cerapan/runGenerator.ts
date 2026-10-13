@@ -17,6 +17,12 @@ import { generateRepeatabilitySentisimal } from "./calculator/timbanganSentisima
 import { generateKemiringanSentisimal } from "./calculator/timbanganSentisimal/generateKemiringanSentisimal";
 import { generateKebenaranGandar } from "./calculator/timbanganSentisimal/generateKebenaranGandar";
 import { generateAnakTimbangan } from "./calculator/anakTimbangan/generateAnakTimbangan";
+import { generateKebenaranBobotIngsut } from "./calculator/timbanganBobotIngsut/generateKebenaranBobotIngsut";
+import { generateKepekaanBobotIngsut } from "./calculator/timbanganBobotIngsut/generateKepekaanBobotIngsut";
+import { generateRepeatabilityBobotIngsut } from "./calculator/timbanganBobotIngsut/generateRepeatabilityBobotIngsut";
+import { generateEksentrisitasBobotIngsut } from "./calculator/timbanganBobotIngsut/generateEksentrisitasBobotIngsut";
+import { generateKemiringanBobotIngsut } from "./calculator/timbanganBobotIngsut/generateKemiringanBobotIngsut";
+import { generateKebenaranGandarBobotIngsut } from "./calculator/timbanganBobotIngsut/generateKebenaranGandarBobotIngsut";
 
 
 export function runCerapanGenerator(
@@ -105,6 +111,18 @@ export function runCerapanGenerator(
             return generateKebenaranGandar(input);
         case "ANAK_TIMBANGAN_PERLENGKAPAN":
             return generateAnakTimbangan(input);
+        case "KEBENARAN_BOBOT_INGSUT":
+            return generateKebenaranBobotIngsut(input);
+        case "KEPEKAAN_BOBOT_INGSUT":
+            return generateKepekaanBobotIngsut(input);
+        case "REPEATABILITY_BOBOT_INGSUT":
+            return generateRepeatabilityBobotIngsut(input);
+        case "EKSENTRISITAS_BOBOT_INGSUT":
+            return generateEksentrisitasBobotIngsut(input);
+        case "KEMIRINGAN_BOBOT_INGSUT":
+            return generateKemiringanBobotIngsut(input);
+        case "KEBENARAN_GANDAR_BOBOT_INGSUT":
+            return generateKebenaranGandarBobotIngsut(input);
         default:
             return [];
 

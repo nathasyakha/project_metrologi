@@ -2,6 +2,7 @@ import { handleEksentrisitas } from "./handleEksentrisitasMeja";
 import { handleKebenaran } from "./handleKebenaran";
 import { handleKepekaan } from "./handleKepekaan";
 import { handleRepeatability } from "./handleRepeatability";
+import { handleAnakTimbanganPerlengkapan } from "./handleAnakTimbanganPerlengkapan";
 
 export function handler(
     context: any
@@ -47,6 +48,15 @@ export function handler(
             );
 
             break;
+
+        case "ANAK_TIMBANGAN_PERLENGKAPAN":
+
+            handleAnakTimbanganPerlengkapan(
+                context
+            );
+
+            break;
+
     }
 
 

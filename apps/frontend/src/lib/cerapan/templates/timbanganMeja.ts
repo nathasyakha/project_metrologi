@@ -398,14 +398,14 @@ export const timbanganMeja: CerapanTemplate = {
             ]
         },
         /*
-       ======================================
-       PENGUJIAN ANAK TIMBANGAN
-       ======================================
-       */
+        ======================================
+        PENGUJIAN ANAK TIMBANGAN
+        ======================================
+        */
 
         {
             id:
-                "anak_timbangan",
+                "anak_timbangan_perlengkapan",
 
             title:
                 "Pengujian Anak Timbangan Perlengkapan",
@@ -420,7 +420,7 @@ export const timbanganMeja: CerapanTemplate = {
 
                 {
                     key:
-                        "kelas",
+                        "kelasAT",
 
                     label:
                         "Kelas",
@@ -465,35 +465,13 @@ export const timbanganMeja: CerapanTemplate = {
 
                 {
                     key:
-                        "pengamatan",
+                        "kesalahan",
 
                     label:
-                        "Pengamatan",
+                        "Kesalahan (g)",
 
                     type:
-                        "select",
-
-                    options: [
-
-                        {
-                            value:
-                                "SAH",
-
-                            label:
-                                "SAH"
-                        },
-
-
-                        {
-                            value:
-                                "BATAL",
-
-                            label:
-                                "BATAL"
-                        }
-
-                    ]
-
+                        "number",
                 },
 
 
@@ -552,7 +530,8 @@ export const timbanganMeja: CerapanTemplate = {
             type:
                 "text"
 
-        }
+        },
+
 
 
     ]
