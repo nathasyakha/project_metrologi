@@ -3,6 +3,7 @@ import { timbanganPegas } from "./timbanganPegas";
 import { timbanganMeja } from "./timbanganMeja";
 import { timbanganSentisimal } from "./timbanganSentisimal";
 import { timbanganBobotIngsut } from "./timbanganBobotIngsut";
+import { dacin } from "./dacin";
 
 export const cerapanTemplates = {
 
@@ -15,5 +16,7 @@ export const cerapanTemplates = {
     TIMBANGAN_SENTISIMAL:
         timbanganSentisimal,
     TIMBANGAN_BOBOT_INGSUT:
-        timbanganBobotIngsut
+        timbanganBobotIngsut,
+    DACIN:
+        dacin
 };

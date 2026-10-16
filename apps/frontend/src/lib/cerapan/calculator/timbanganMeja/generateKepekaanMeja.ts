@@ -5,9 +5,11 @@ import {
 
 
 interface Input {
-
+    jenisAlat: string;
+    kelas: string;
     kapasitasMaksimum: number;
-
+    nilaiE: number;
+    layanan: "TERA" | "TERA_ULANG";
 }
 
 
@@ -24,13 +26,9 @@ export function generateKepekaanMeja(
 
     const bkd =
         hitungBKDMeja({
-
-            kapasitasMaksimum:
-                data.kapasitasMaksimum,
-
-            muatanUji:
-                muatanUji
-
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            muatanUji: muatanUji,
+            layanan: data.layanan
         });
 
 

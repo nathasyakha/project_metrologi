@@ -2,9 +2,11 @@ import { hitungBKDMeja } from "./hitungBKDMeja";
 
 
 interface Input {
-
+    jenisAlat: string;
+    kelas: string;
     kapasitasMaksimum: number;
-
+    nilaiE: number;
+    layanan: "TERA" | "TERA_ULANG";
 }
 
 
@@ -23,13 +25,9 @@ export function generateEksentrisitasMeja(
 
     const bkd =
         hitungBKDMeja({
-
-            kapasitasMaksimum:
-                data.kapasitasMaksimum,
-
-            muatanUji:
-                muatan
-
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            muatanUji: muatan,
+            layanan: data.layanan
         });
 
 

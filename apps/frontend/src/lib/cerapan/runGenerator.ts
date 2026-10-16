@@ -23,7 +23,9 @@ import { generateRepeatabilityBobotIngsut } from "./calculator/timbanganBobotIng
 import { generateEksentrisitasBobotIngsut } from "./calculator/timbanganBobotIngsut/generateEksentrisitasBobotIngsut";
 import { generateKemiringanBobotIngsut } from "./calculator/timbanganBobotIngsut/generateKemiringanBobotIngsut";
 import { generateKebenaranGandarBobotIngsut } from "./calculator/timbanganBobotIngsut/generateKebenaranGandarBobotIngsut";
-
+import { generateKebenaranDacin } from "./calculator/dacin/generateKebenaranDacin";
+import { generateKepekaanDacin } from "./calculator/dacin/generateKepekaanDacin";
+import { generateRepeatabilityDacin } from "./calculator/dacin/generateRepeatabilityDacin";
 
 export function runCerapanGenerator(
     instrument: any,
@@ -123,6 +125,12 @@ export function runCerapanGenerator(
             return generateKemiringanBobotIngsut(input);
         case "KEBENARAN_GANDAR_BOBOT_INGSUT":
             return generateKebenaranGandarBobotIngsut(input);
+        case "KEBENARAN_DACIN":
+            return generateKebenaranDacin(input);
+        case "KEPEKAAN_DACIN":
+            return generateKepekaanDacin(input);
+        case "REPEATABILITY_DACIN":
+            return generateRepeatabilityDacin(input);
         default:
             return [];
 

@@ -1,17 +1,15 @@
 interface Input {
-
     kapasitasMaksimum: number;
-
     muatanUji: number;
-
+    layanan: "TERA" | "TERA_ULANG";
 }
 
 
 export function hitungBKDMeja({
 
     kapasitasMaksimum,
-
-    muatanUji
+    muatanUji,
+    layanan,
 
 }: Input) {
 
@@ -29,7 +27,7 @@ export function hitungBKDMeja({
     */
 
 
-    const bkd =
+    let bkd =
 
         (
             kapasitasMaksimum
@@ -42,8 +40,13 @@ export function hitungBKDMeja({
 
 
 
+    if (layanan === "TERA_ULANG") {
+        bkd =
+            bkd * 2;
+    }
+
     return Number(
-        bkd.toFixed(3)
+        bkd.toFixed(4)
     );
 
 }

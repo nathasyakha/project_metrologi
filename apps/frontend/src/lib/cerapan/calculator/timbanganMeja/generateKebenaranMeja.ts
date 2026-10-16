@@ -44,13 +44,9 @@ export function generateKebenaranMeja(
 
     const bkd =
         hitungBKDMeja({
-
-            kapasitasMaksimum:
-                data.kapasitasMaksimum,
-
-            muatanUji:
-                muatanUji
-
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            muatanUji: muatanUji,
+            layanan: data.layanan
         });
 
 
