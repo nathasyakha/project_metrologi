@@ -56,8 +56,8 @@ export function generateKebenaranMeja(
         {
             lantaiAT: muatanUji,
 
-            tembor:
-                muatanUji,
+            //tembor:
+            //  muatanUji,
 
 
             bkd:
@@ -76,6 +76,10 @@ export function generateKebenaranMeja(
 
             hasil:
                 null,
+            kapasitasMaksimum:
+                data.kapasitasMaksimum,
+
+            layanan: data.layanan,
 
             /*
             ======================

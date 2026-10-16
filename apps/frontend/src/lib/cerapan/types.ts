@@ -29,6 +29,7 @@ export interface CerapanColumn {
     readonly?: boolean;
     options?: CerapanOption[];
     disabledWhen?: (row: any) => boolean;
+    max?: number | ((row: any) => number);
 }
 
 export interface CerapanRow {

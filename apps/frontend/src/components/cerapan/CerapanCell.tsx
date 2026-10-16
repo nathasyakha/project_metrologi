@@ -251,26 +251,81 @@ export function CerapanCell({
 
                 ) : (
 
-                    <input className=" border border-slate-300 rounded px-2 py-1.5 w-full "
+                    <input
+                        className="border border-slate-300 rounded px-2 py-1.5 w-full"
+
                         type={
                             column.type === "number"
-                                ?
-                                "number"
-                                :
-                                "text"
+                                ? "number"
+                                : "text"
                         }
-                        value={value ?? ""}
-                        onChange={(e) => {
-                            const raw = e.target.value;
-                            updateValue(index, column.key,
-                                column.type === "number"
-                                    ? Number(raw)
-                                    : raw
 
-                            );
+                        value={
+                            value ?? ""
+                        }
+
+                        max={
+                            column.type === "number" && column.max !== undefined
+                                ? typeof column.max === "function"
+                                    ? column.max(row)
+                                    : column.max
+                                : undefined
+                        }
+
+                        onChange={(e) => {
+
+                            const raw =
+                                e.target.value;
+
+                            if (
+                                column.type === "number"
+                            ) {
+
+                                const numericValue =
+                                    Number(raw);
+
+                                const maxValue =
+                                    column.max !== undefined
+                                        ? typeof column.max === "function"
+                                            ? column.max(row)
+                                            : column.max
+                                        : undefined;
+
+
+                                /*
+                                ==========================
+                                BATAS MAKSIMUM
+                                ==========================
+                                */
+
+                                if (
+                                    maxValue !== undefined &&
+                                    numericValue > maxValue
+                                ) {
+
+                                    return;
+                                }
+
+
+                                updateValue(
+                                    index,
+                                    column.key,
+                                    numericValue
+                                );
+
+                            }
+
+                            else {
+
+                                updateValue(
+                                    index,
+                                    column.key,
+                                    raw
+                                );
+
+                            }
 
                         }}
-
                     />
 
                 )
