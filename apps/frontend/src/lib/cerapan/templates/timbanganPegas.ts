@@ -42,7 +42,7 @@ export const timbanganPegas: CerapanTemplate = {
             type:
                 "table",
             generator:
-                "KEBENARAN",
+                "KEBENARAN_PEGAS",
             columns: [
                 {
                     key:
@@ -61,6 +61,9 @@ export const timbanganPegas: CerapanTemplate = {
                         "Muatan Uji (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -124,7 +127,10 @@ export const timbanganPegas: CerapanTemplate = {
                     label:
                         "Muatan Uji (g)",
                     type:
-                        "number"
+                        "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -230,6 +236,9 @@ export const timbanganPegas: CerapanTemplate = {
 
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
 
 
@@ -326,7 +335,10 @@ export const timbanganPegas: CerapanTemplate = {
                     label:
                         "Muatan Uji (g)",
                     type:
-                        "number"
+                        "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:

@@ -1,54 +1,82 @@
-import { HandlerContext } from "@/lib/cerapan/types/handler";
 
+import { HandlerContext } from "@/lib/cerapan/types/handler";
+import { hitungBKD } from "@/lib/cerapan/calculator/common/hitungBKD";
+import { findBKDRule } from "@/lib/cerapan/rules/findBKDRules";
 
 export function handleKepekaan({
-
     key,
-
     updated,
-
     index
-
 }: HandlerContext) {
 
-
-    if (
-        key !== "pengamatan"
-    ) {
-
-        return;
-
-    }
-
+    const row = { ...updated[index] };
 
     /*
-    =============================
-    HASIL BERDASARKAN PENGAMATAN
-    =============================
+    ==========================
+    HITUNG ULANG BKD
+    ==========================
     */
 
+    if (key === "muatanUji") {
+        const raw = row.muatanUji;
+        const muatanUji = Number(raw);
+        const kapasitasMaksimum =
+            Number(row.kapasitasMaksimum);
 
-    if (
-        updated[index].pengamatan === "BERGERAK"
-    ) {
+        if (
+            raw == null ||
+            raw === "" ||
+            !Number.isFinite(muatanUji) ||
+            muatanUji <= 0 ||
+            !Number.isFinite(kapasitasMaksimum) ||
+            kapasitasMaksimum <= 0 ||
+            muatanUji > kapasitasMaksimum
+        ) {
+            row.bkd = null;
+        } else {
+            const rule = findBKDRule({
+                jenisAlat: row.jenisAlat,
+                kelas: row.kelas,
+                pengujian: "KEPEKAAN"
+            });
 
-        updated[index].hasil =
-            "SAH";
+            if (rule) {
+                const bkd = hitungBKD({
+                    rule,
+                    titikUji: muatanUji,
+                    nilaiE: Number(row.nilaiE),
+                    layanan: row.layanan
+                });
 
+                row.bkd =
+                    bkd != null
+                        ? Number(bkd.toFixed(3))
+                        : null;
+            } else {
+                row.bkd = null;
+            }
+        }
     }
-    else if (
-        updated[index].pengamatan === "TIDAK_BERGERAK"
-    ) {
 
-        updated[index].hasil =
-            "BATAL";
+    /*
+    ==========================
+    HASIL PENGAMATAN
+    ==========================
+    */
 
+    if (key === "pengamatan") {
+        if (row.pengamatan === "BERGERAK") {
+            row.hasil = "SAH";
+        } else if (
+            row.pengamatan === "TIDAK_BERGERAK" ||
+            row.pengamatan === "KURANG"
+        ) {
+            row.hasil = "BATAL";
+        } else {
+            row.hasil = null;
+        }
     }
-    else {
 
-        updated[index].hasil =
-            "BATAL"
-
-    }
-
+    updated[index] = row;
+    return true;
 }

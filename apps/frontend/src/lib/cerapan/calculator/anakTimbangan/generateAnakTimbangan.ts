@@ -1,29 +1,16 @@
-import {
-    hitungBKDAnakTimbangan
-}
-    from "./hitungBKDAnakTimbangan";
-
+import { hitungBKDAnakTimbangan } from "./hitungBKDAnakTimbangan";
 
 interface Input {
-
     kelas:
     string;
-
 }
-
-
 
 export function generateAnakTimbangan(
     data: Input
 ) {
-
-
-    const kelasAT =
-        "M3";
-
+    const kelasAT = "M3";
 
     const nominal = [
-
         1000,
         500,
         200,

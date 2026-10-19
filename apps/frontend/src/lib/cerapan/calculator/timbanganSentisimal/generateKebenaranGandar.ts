@@ -2,59 +2,39 @@ import { hitungBKD } from "../common/hitungBKD";
 import { findBKDRule } from "../../rules/findBKDRules";
 
 interface Input {
-
     kapasitasMaksimum: number;
     jenisAlat: string;
     kelas: string;
     nilaiE: number;
-
     layanan:
     | "TERA"
     | "TERA_ULANG";
-
 }
-
-
 
 export function generateKebenaranGandar(
     data: Input
 ) {
-
-
     /*
     ============================
     HANYA TERA
     ============================
     */
 
-    if (
-        data.layanan !== "TERA"
-    ) {
-
+    if (data.layanan !== "TERA") {
         return [];
-
     }
-
     const rule =
         findBKDRule({
-            jenisAlat:
-                data.jenisAlat,
-            kelas:
-                data.kelas,
-            pengujian:
-                "KEBENARAN_GANDAR"
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            pengujian: "KEBENARAN_GANDAR"
         });
 
     if (!rule) {
-        throw new Error(
-            "Rule kebenaran tidak ditemukan"
-        );
+        throw new Error("Rule kebenaran tidak ditemukan");
     }
-    const muatan =
-        Number(data.kapasitasMaksimum);
-
-    let maksGandar =
-        0;
+    const muatan = Number(data.kapasitasMaksimum);
+    let maksGandar = 0;
 
     if (muatan === 150000) {
         maksGandar = 15000;
@@ -68,39 +48,29 @@ export function generateKebenaranGandar(
         maksGandar = 50000;
     }
 
-    const bkd =
-        hitungBKD({
-            rule,
-            titikUji:
-                maksGandar,
-            nilaiE:
-                data.nilaiE,
-            layanan:
-                data.layanan
-        });
+    const bkd = hitungBKD({
+        rule,
+        titikUji: maksGandar,
+        nilaiE: data.nilaiE,
+        layanan: data.layanan
+    });
 
     return [
-
         {
-
-            maksGandar:
-                maksGandar,
-            lantaiAT:
-                maksGandar,
-            bkd:
-                bkd,
-            pengamatan:
-                null,
-            perluImbuh:
-                false,
-            hasil:
-                null,
-            imbuh:
-                null,
-            pengamatanSetelahImbuh:
-                null,
+            maksGandar: maksGandar,
+            lantaiAT: maksGandar,
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            layanan: data.layanan,
+            nilaiE: data.nilaiE,
+            bkd: bkd,
+            pengamatan: null,
+            perluImbuh: false,
+            hasil: null,
+            imbuh: null,
+            pengamatanSetelahImbuh: null,
         }
-
     ];
 
 }

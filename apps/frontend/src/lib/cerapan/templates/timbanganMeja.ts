@@ -153,10 +153,13 @@ export const timbanganMeja: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
-                        "tembor",
+                        "lantaiAT",
                     label:
                         "Tembor (g)",
                     type:
@@ -243,10 +246,13 @@ export const timbanganMeja: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
-                        "tembor",
+                        "lantaiAT",
                     label:
                         "Tembor (g)",
                     type:
@@ -325,10 +331,13 @@ export const timbanganMeja: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
-                        "tembor",
+                        "lantaiAT",
                     label:
                         "Tembor (g)",
                     type:

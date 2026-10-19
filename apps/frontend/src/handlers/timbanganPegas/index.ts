@@ -1,63 +1,26 @@
-import {
-    handleKebenaran
-}
-    from "./handleKebenaran";
 
-import {
-    handleKepekaan
-}
-    from "./handleKepekaan";
+import { handleKebenaran } from "./handleKebenaran";
+import { handleKepekaan } from "./handleKepekaan";
+import { handleRepeatability } from "./handleRepeatability";
+import { handleEksentrisitas } from "./handleEksentrisitas";
 
-import {
-    handleRepeatability
-} from "./handleRepeatability";
-
-import {
-    handleEksentrisitas
-} from "./handleEksentrisitas";
-
-
-export function handler(
-    context: any
-) {
-
-    const {
-        section
-    } = context;
-
+export function handler(context: any) {
+    const { section } = context;
 
     switch (section.generator) {
+        case "KEBENARAN_PEGAS":
+            return handleKebenaran(context);
 
-
-        case "KEBENARAN":
-
-            handleKebenaran(
-                context
-            );
-
-            break;
         case "KEPEKAAN":
+            return handleKepekaan(context);
 
-            handleKepekaan(
-                context
-            );
-
-            break;
         case "REPEATABILITY_PEGAS":
-            handleRepeatability(
-                context
-            );
-            break;
+            return handleRepeatability(context);
+
         case "EKSENTRISITAS_PEGAS":
-            handleEksentrisitas(
-                context
-            );
-            break;
+            return handleEksentrisitas(context);
 
-
+        default:
+            return false;
     }
-
-
-    return false;
-
 }

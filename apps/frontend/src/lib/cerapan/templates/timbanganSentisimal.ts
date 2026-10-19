@@ -51,6 +51,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -59,6 +62,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Piring AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum) / 100
                 },
                 {
                     key:
@@ -144,6 +150,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -152,6 +161,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Piring AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum) / 100
                 },
                 {
                     key:
@@ -227,6 +239,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -235,6 +250,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Piring AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum) / 100
                 },
                 {
                     key:
@@ -326,17 +344,17 @@ export const timbanganSentisimal: CerapanTemplate = {
                 },
                 {
                     key:
-                        "maksGandar",
+                        "lantaiAT",
                     label:
-                        "Maksimum Gandar Utama (g)",
+                        "Lantai AT (g)",
                     type:
                         "number",
                 },
                 {
                     key:
-                        "lantaiAT",
+                        "maksGandar",
                     label:
-                        "Lantai AT (g)",
+                        "Maksimum Gandar Utama (g)",
                     type:
                         "number",
                 },
@@ -431,6 +449,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -439,6 +460,9 @@ export const timbanganSentisimal: CerapanTemplate = {
                         "Piring AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum) / 100
                 },
 
                 {
@@ -520,17 +544,20 @@ export const timbanganSentisimal: CerapanTemplate = {
             columns: [
                 {
                     key:
-                        "maksGandar",
-                    label:
-                        "Maksimum Gandar Utama (g)",
-                    type:
-                        "number",
-                },
-                {
-                    key:
                         "lantaiAT",
                     label:
                         "Lantai AT (g)",
+                    type:
+                        "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
+                },
+                {
+                    key:
+                        "maksGandar",
+                    label:
+                        "Maksimum Gandar Utama (g)",
                     type:
                         "number",
                 },

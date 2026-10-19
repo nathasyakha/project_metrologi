@@ -1,8 +1,4 @@
-import {
-    hitungBKDMeja
-}
-    from "./hitungBKDMeja";
-
+import { hitungBKDMeja } from "./hitungBKDMeja";
 
 interface Input {
     jenisAlat: string;
@@ -12,49 +8,22 @@ interface Input {
     layanan: "TERA" | "TERA_ULANG";
 }
 
-
-
-export function generateKepekaanMeja(
-    data: Input
-) {
-
-
-    const muatanUji =
-        data.kapasitasMaksimum;
-
-
-
-    const bkd =
-        hitungBKDMeja({
-            kapasitasMaksimum: data.kapasitasMaksimum,
-            muatanUji: muatanUji,
-            layanan: data.layanan
-        });
-
-
-
+export function generateKepekaanMeja(data: Input) {
+    const muatanUji = data.kapasitasMaksimum;
+    const bkd = hitungBKDMeja({
+        kapasitasMaksimum: data.kapasitasMaksimum,
+        muatanUji: muatanUji,
+        layanan: data.layanan
+    });
     return [
-
         {
-
-            lantaiAT:
-                muatanUji,
-
-            tembor:
-                muatanUji,
-
-            bkd:
-                bkd,
-
-            imbuh:
-                bkd,
-
-            pengamatan:
-                null,
-
-            hasil:
-                null
-
+            lantaiAT: muatanUji,
+            bkd: bkd,
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            layanan: data.layanan,
+            imbuh: "Tambah imbuh sebesar BKD",
+            pengamatan: null,
+            hasil: null
         }
 
     ];

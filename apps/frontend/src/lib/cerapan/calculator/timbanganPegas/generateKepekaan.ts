@@ -11,12 +11,9 @@ interface Input {
     | "TERA_ULANG";
 }
 
-
-
 export function generateKepekaan(
     data: Input
 ) {
-
     const rule =
         findBKDRule({
             jenisAlat: data.jenisAlat,
@@ -25,25 +22,26 @@ export function generateKepekaan(
         });
 
     if (!rule) {
-        throw new Error(
-            "Rule kepekaan tidak ditemukan"
-        );
+        throw new Error("Rule kepekaan tidak ditemukan");
     }
 
-    const muatan =
-        data.kapasitasMaksimum;
+    const muatan = data.kapasitasMaksimum;
 
-    const bkd =
-        hitungBKD({
-            rule,
-            titikUji: muatan,
-            nilaiE: data.nilaiE,
-            layanan: data.layanan
-        });
+    const bkd = hitungBKD({
+        rule,
+        titikUji: muatan,
+        nilaiE: data.nilaiE,
+        layanan: data.layanan
+    });
     return [
         {
             muatanUji: muatan,
             bkd: bkd,
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            layanan: data.layanan,
+            nilaiE: data.nilaiE,
             imbuh: "Tambah imbuh sebesar BKD",
             pengamatan: null,
             hasil: null

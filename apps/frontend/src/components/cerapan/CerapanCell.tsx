@@ -7,23 +7,15 @@ function renderReadonlyValue(value: any) {
     ) {
         return "-";
     }
-
     return value;
-
 }
 
 interface Props {
-
     column: any;
-
     row: any;
-
     index: number;
-
     section: any;
-
     updateValue: any;
-
 }
 
 export function CerapanCell({
@@ -33,13 +25,8 @@ export function CerapanCell({
     section,
     updateValue
 }: Props) {
-
     const value =
-        row[
-        column.key
-        ];
-
-
+        row[column.key];
     /*
      * =========================
      * NOMOR
@@ -51,20 +38,13 @@ export function CerapanCell({
         "nomor" || column.key ===
         "posisiUji" || column.key === "pengamatan025e" || column.key === "pengamatan05e"
 
-
     /*
      * =========================
      * READONLY
      * =========================
      */
 
-    const isReadonly =
-
-        column.readonly ||
-
-        isNoColumn;
-
-
+    const isReadonly = column.readonly || isNoColumn;
 
     /*
      * =========================
@@ -72,13 +52,8 @@ export function CerapanCell({
      * =========================
      */
 
-    let readonlyValue =
-        value;
-
-
-    let readonlyClass =
-        "";
-
+    let readonlyValue = value;
+    let readonlyClass = "";
 
     /*
      * =========================
@@ -87,27 +62,16 @@ export function CerapanCell({
      */
 
     if (
-        section.generator ===
-        "KEBENARAN" &&
-
-        column.key ===
-        "bkd" &&
-
+        section.generator === "KEBENARAN" &&
+        column.key === "bkd" &&
         (
             value === null ||
             value === undefined
         )
     ) {
-
-        readonlyValue =
-            row.placeholderBKD;
-
-
-        readonlyClass =
-            "text-slate-400";
-
+        readonlyValue = row.placeholderBKD;
+        readonlyClass = "text-slate-400";
     }
-
 
     /*
      * =========================
@@ -115,119 +79,36 @@ export function CerapanCell({
      * =========================
      */
 
-    if (
-        column.key ===
-        "hasil"
-    ) {
-
-        if (
-            value ===
-            "SAH"
-        ) {
-
-            readonlyClass =
-                "text-green-600 font-semibold";
-
+    if (column.key === "hasil") {
+        if (value === "SAH") {
+            readonlyClass = "text-green-600 font-semibold";
+        } else if (value === "BATAL") {
+            readonlyClass = "text-red-600 font-semibold";
         }
-
-        else if (
-            value ===
-            "BATAL"
-        ) {
-
-            readonlyClass =
-                "text-red-600 font-semibold";
-
-        }
-
     }
 
-
-
     return (
-
-        <td
-            key={
-                column.key
-            }
-
-            className={`
-                                                        px-2
-                                                        py-2
-                                                        text-center
-                                                    `}
-        >
-
+        <td key={column.key} className={`px-2 py-2 text-center`}>
             {isNoColumn ? (
-
-                <span
-                    className="
-                                                                text-slate-700
-                                                                font-medium
-                                                            "
-                >
-
-                    {
-                        renderReadonlyValue(
-                            value
-                        )
-                    }
-
+                <span className="text-slate-700 font-medium">
+                    {renderReadonlyValue(value)}
                 </span>
-
             ) : isReadonly ? (
-
-                <div
-                    className="
-                                                                border
-                                                                border-slate-200
-                                                                bg-slate-100
-                                                                rounded
-                                                                px-2
-                                                                py-1.5
-                                                                w-full
-                                                                min-h-[34px]
-                                                                flex
-                                                                items-center
-                                                            "
-                >
-
-                    <span
-                        className={
-                            readonlyClass
-                        }
-                    >
-
-                        {
-                            renderReadonlyValue(
-                                readonlyValue
-                            )
-                        }
-
+                <div className="border border-slate-200 bg-slate-100 rounded px-2 py-1.5 w-full min-h-[34px] flex items-center">
+                    <span className={readonlyClass}>
+                        {renderReadonlyValue(readonlyValue)}
                     </span>
-
                 </div>
-
             ) : (
                 column.type === "select" ? (
                     <select className="border border-slate-300 rounded px-2 py-1.5 w-full"
                         value={value ?? ""}
                         disabled={column.disabledWhen ? column.disabledWhen(row) : false}
                         onChange={(e) => {
-
-                            updateValue(
-                                index,
-                                column.key,
-                                e.target.value
-                            );
-
+                            updateValue(index, column.key, e.target.value);
                         }}
                     >
-
-                        <option value="">
-                            Pilih
-                        </option>
-
+                        <option value="">Pilih</option>
                         {
                             column.options?.map(
                                 (
@@ -236,34 +117,18 @@ export function CerapanCell({
                                         label: string;
                                     }
                                 ) => (
-                                    <option
-                                        key={option.value}
-                                        value={option.value}
-                                    >
+                                    <option key={option.value} value={option.value}>
                                         {option.label}
                                     </option>
                                 )
                             )
                         }
-
                     </select>
-
-
                 ) : (
 
-                    <input
-                        className="border border-slate-300 rounded px-2 py-1.5 w-full"
-
-                        type={
-                            column.type === "number"
-                                ? "number"
-                                : "text"
-                        }
-
-                        value={
-                            value ?? ""
-                        }
-
+                    <input className="border border-slate-300 rounded px-2 py-1.5 w-full"
+                        type={column.type === "number" ? "number" : "text"}
+                        value={value ?? ""}
                         max={
                             column.type === "number" && column.max !== undefined
                                 ? typeof column.max === "function"
@@ -271,19 +136,18 @@ export function CerapanCell({
                                     : column.max
                                 : undefined
                         }
-
                         onChange={(e) => {
-
-                            const raw =
-                                e.target.value;
-
-                            if (
-                                column.type === "number"
-                            ) {
-
-                                const numericValue =
-                                    Number(raw);
-
+                            const raw = e.target.value;
+                            if (column.type === "number") {
+                                if (raw === "") {
+                                    updateValue(
+                                        index,
+                                        column.key,
+                                        null
+                                    );
+                                    return;
+                                }
+                                const numericValue = Number(raw);
                                 const maxValue =
                                     column.max !== undefined
                                         ? typeof column.max === "function"
@@ -291,47 +155,29 @@ export function CerapanCell({
                                             : column.max
                                         : undefined;
 
-
-                                /*
-                                ==========================
-                                BATAS MAKSIMUM
-                                ==========================
-                                */
-
+                                // Tolak nilai yang melebihi batas maksimum
                                 if (
                                     maxValue !== undefined &&
                                     numericValue > maxValue
                                 ) {
-
                                     return;
                                 }
-
-
                                 updateValue(
                                     index,
                                     column.key,
                                     numericValue
                                 );
-
-                            }
-
-                            else {
-
+                            } else {
                                 updateValue(
                                     index,
                                     column.key,
                                     raw
                                 );
-
                             }
-
                         }}
                     />
-
                 )
-
             )}
-
         </td>
     )
 }

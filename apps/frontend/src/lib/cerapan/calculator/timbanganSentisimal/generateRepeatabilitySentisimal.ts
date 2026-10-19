@@ -16,81 +16,38 @@ export function generateRepeatabilitySentisimal(
 ) {
     const rule =
         findBKDRule({
-            jenisAlat:
-                data.jenisAlat,
-            kelas:
-                data.kelas,
-            pengujian:
-                "REPEATABILITY"
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            pengujian: "REPEATABILITY"
         });
 
     if (!rule) {
-        throw new Error(
-            "Rule kebenaran tidak ditemukan"
-        );
+        throw new Error("Rule kebenaran tidak ditemukan");
     }
-    const muatan =
-        data.kapasitasMaksimum;
+    const muatan = data.kapasitasMaksimum;
+    const bkd = hitungBKD({
+        rule,
+        titikUji: muatan,
+        nilaiE: data.nilaiE,
+        layanan: data.layanan
+    });
 
-
-
-    const bkd =
-        hitungBKD({
-            rule,
-            titikUji:
-                muatan,
-            nilaiE:
-                data.nilaiE,
-            layanan:
-                data.layanan
-        });
-
-    return Array.from(
-        {
-            length: 3
-        },
-
-        (_, index) => {
-
-
-            return {
-
-                nomor:
-                    index + 1,
-
-
-                lantaiAT:
-                    muatan,
-
-
-                piringAT:
-                    muatan,
-
-
-                bkd:
-                    bkd,
-
-
-                pengamatan:
-                    null,
-
-
-                imbuh:
-                    null,
-
-
-                pengamatanSetelahImbuh:
-                    null,
-
-
-                hasil:
-                    null
-
-            };
-
-
-        }
-
-    );
-
+    return Array.from({ length: 3 }, (_, index) => {
+        return {
+            nomor: index + 1,
+            lantaiAT: muatan,
+            piringAT: muatan / 100,
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            layanan: data.layanan,
+            nilaiE: data.nilaiE,
+            bkd: bkd,
+            pengamatan: null,
+            imbuh: null,
+            pengamatanSetelahImbuh: null,
+            hasil: null,
+            perluImbuh: false
+        };
+    });
 }
