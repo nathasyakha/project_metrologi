@@ -51,7 +51,7 @@ export function handleRepeatability({
                 const rule = findBKDRule({
                     jenisAlat: row.jenisAlat,
                     kelas: row.kelas,
-                    pengujian: "KEPEKAAN"
+                    pengujian: "REPEATABILITY"
                 });
 
                 if (rule) {

@@ -20,7 +20,11 @@ export function generateKebenaranDacin(data: Input) {
     return [
         {
             muatanUji: muatanUji,
-            nilaiE: data.nilaiE, // Tambahkan ini agar dibaca oleh handleKebenaran
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            layanan: data.layanan,
+            nilaiE: data.nilaiE,
             bkd: bkd !== null ? Number(bkd.toFixed(3)) : null,
             pengamatan: null,
             hasil: null,

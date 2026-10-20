@@ -1,8 +1,4 @@
-import {
-    hitungBKDDacin
-}
-    from "./hitungBKDDacin";
-
+import { hitungBKDDacin } from "./hitungBKDDacin";
 
 interface Input {
     jenisAlat: string;
@@ -12,44 +8,30 @@ interface Input {
     layanan: "TERA" | "TERA_ULANG";
 }
 
-
-
 export function generateRepeatabilityDacin(
     data: Input
 ) {
-
-
-    const muatanUji =
-        data.kapasitasMaksimum;
-
+    const muatanUji = data.kapasitasMaksimum;
     const jumlahPosisi = 3;
-
-    const bkd =
-        hitungBKDDacin({
-            kapasitasMaksimum: data.kapasitasMaksimum,
-            muatanUji: muatanUji,
-            layanan: data.layanan
-
-        });
-
-
+    const bkd = hitungBKDDacin({
+        kapasitasMaksimum: data.kapasitasMaksimum,
+        muatanUji: muatanUji,
+        layanan: data.layanan
+    });
 
     return [...Array(jumlahPosisi)].map(
-
         (_value, index) => {
-
-
             return {
-
-                nomor:
-                    index + 1,
-
+                nomor: index + 1,
                 muatanUji: muatanUji,
-                nilaiE: data.nilaiE, // Tambahkan ini agar dibaca oleh handleKebenaran
+                kapasitasMaksimum: data.kapasitasMaksimum,
+                jenisAlat: data.jenisAlat,
+                kelas: data.kelas,
+                layanan: data.layanan,
+                nilaiE: data.nilaiE,
                 bkd: bkd !== null ? Number(bkd.toFixed(3)) : null,
                 pengamatan: null,
                 hasil: null,
-
                 /*
                 ======================
                 UJI TAMBAHAN

@@ -51,6 +51,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -59,6 +62,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Maksimal Gandar Besar (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -144,6 +150,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -152,6 +161,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Maksimal Gandar Besar (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -227,6 +239,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -235,6 +250,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Maksimal Gandar Besar (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -331,6 +349,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -339,6 +360,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Gandar (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -431,6 +455,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -439,6 +466,9 @@ export const timbanganBobotIngsut: CerapanTemplate = {
                         "Gandar (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
 
                 {
@@ -520,19 +550,25 @@ export const timbanganBobotIngsut: CerapanTemplate = {
             columns: [
                 {
                     key:
-                        "gandarKecil",
-                    label:
-                        "Maks Gandar Kecil - 5e (g)",
-                    type:
-                        "number",
-                },
-                {
-                    key:
                         "lantaiAT",
                     label:
                         "Lantai AT (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
+                },
+                {
+                    key:
+                        "gandarKecil",
+                    label:
+                        "Maks Gandar Kecil - 5e (g)",
+                    type:
+                        "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:

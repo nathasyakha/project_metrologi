@@ -35,6 +35,9 @@ export const dacin: CerapanTemplate = {
                     key: "muatanUji",
                     label: "Muatan Uji (kg)",
                     type: "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key: "bkd",
@@ -106,6 +109,9 @@ export const dacin: CerapanTemplate = {
                     key: "muatanUji",
                     label: "Muatan Uji (kg)",
                     type: "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key: "bkd",
@@ -158,6 +164,9 @@ export const dacin: CerapanTemplate = {
                     key: "muatanUji",
                     label: "Muatan Uji (kg)",
                     type: "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key: "bkd",

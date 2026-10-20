@@ -16,76 +16,42 @@ export function generateRepeatabilityBobotIngsut(
 ) {
     const rule =
         findBKDRule({
-            jenisAlat:
-                data.jenisAlat,
-            kelas:
-                data.kelas,
-            pengujian:
-                "REPEATABILITY"
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            pengujian: "REPEATABILITY"
         });
 
     if (!rule) {
-        throw new Error(
-            "Rule kebenaran tidak ditemukan"
-        );
+        throw new Error("Rule kebenaran tidak ditemukan");
     }
-    const muatan =
-        data.kapasitasMaksimum;
 
-
+    const muatan = data.kapasitasMaksimum;
 
     const bkd =
         hitungBKD({
             rule,
-            titikUji:
-                muatan,
-            nilaiE:
-                data.nilaiE,
-            layanan:
-                data.layanan
+            titikUji: muatan,
+            nilaiE: data.nilaiE,
+            layanan: data.layanan
         });
 
-    return Array.from(
-        {
-            length: 3
-        },
-
+    return Array.from({ length: 3 },
         (_, index) => {
-
-
             return {
-
-                nomor:
-                    index + 1,
-
-
-                lantaiAT:
-                    muatan,
-
-
-                maksGandar:
-                    muatan,
-
-
-                bkd:
-                    bkd,
-
-
-                pengamatan:
-                    null,
-
-
-                imbuh:
-                    null,
-
-
-                pengamatanSetelahImbuh:
-                    null,
-
-
-                hasil:
-                    null
-
+                nomor: index + 1,
+                lantaiAT: muatan,
+                maksGandar: muatan,
+                perluImbuh: false,
+                kapasitasMaksimum: data.kapasitasMaksimum,
+                jenisAlat: data.jenisAlat,
+                kelas: data.kelas,
+                layanan: data.layanan,
+                nilaiE: data.nilaiE,
+                bkd: bkd,
+                pengamatan: null,
+                imbuh: null,
+                pengamatanSetelahImbuh: null,
+                hasil: null
             };
 
 

@@ -1,12 +1,37 @@
 import { HandlerContext } from "@/lib/cerapan/types/handler";
+import { hitungBKDDacin } from "@/lib/cerapan/calculator/dacin/hitungBKDDacin";
 
 export function handleKebenaran({
     key,
     updated,
     index
 }: HandlerContext) {
-    // 1. Buat shallow copy agar referensi objek berubah
     const row = { ...updated[index] };
+    /*
+    ==========================
+    HITUNG ULANG BKD
+    ==========================
+    */
+    if (key === "muatanUji") {
+        const muatanUji = Number(row.muatanUji);
+        const kapasitasMaksimum = Number(row.kapasitasMaksimum);
+        if (
+            !Number.isFinite(muatanUji) ||
+            muatanUji <= 0 ||
+            !Number.isFinite(kapasitasMaksimum) ||
+            kapasitasMaksimum <= 0
+        ) {
+            row.bkd = null;
+        } else {
+            const bkd =
+                hitungBKDDacin({
+                    kapasitasMaksimum: kapasitasMaksimum,
+                    muatanUji: muatanUji,
+                    layanan: row.layanan
+                });
+            row.bkd = Number(bkd.toFixed(3));
+        }
+    }
 
     /*
     ==========================
@@ -105,8 +130,6 @@ export function handleKebenaran({
             }
         }
     }
-
-    // Update elemen array dengan referensi objek baru
     updated[index] = row;
     return true;
 }

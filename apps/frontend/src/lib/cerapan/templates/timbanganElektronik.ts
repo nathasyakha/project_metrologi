@@ -71,6 +71,9 @@ export const timbanganElektronik: CerapanTemplate = {
                         "Muatan Uji (g)",
                     type:
                         "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -151,7 +154,10 @@ export const timbanganElektronik: CerapanTemplate = {
                     label:
                         "Muatan Uji (g)",
                     type:
-                        "number"
+                        "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:
@@ -400,6 +406,9 @@ export const timbanganElektronik: CerapanTemplate = {
                     key: "muatanUji",
                     label: "Muatan Uji (g)",
                     type: "number",
+                    max:
+                        (row: any) =>
+                            Number(row.kapasitasMaksimum)
                 },
                 {
                     key:

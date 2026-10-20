@@ -20,6 +20,11 @@ export function generateKepekaanDacin(data: Input) {
     return [
         {
             muatanUji: muatanUji,
+            kapasitasMaksimum: data.kapasitasMaksimum,
+            jenisAlat: data.jenisAlat,
+            kelas: data.kelas,
+            layanan: data.layanan,
+            nilaiE: data.nilaiE,
             bkd: bkd !== null ? Number(bkd.toFixed(3)) : null,
             imbuh: "Tambah imbuh sebesar BKD",
             pengamatan: null,

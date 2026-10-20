@@ -21,66 +21,28 @@ export function generateKebenaranBobotIngsut(data: Input) {
     }
 
     const muatan = data.kapasitasMaksimum;
-
-    const placeholderBKD = hitungBKD({
+    const bkd = hitungBKD({
         rule,
         titikUji: muatan,
         nilaiE: data.nilaiE,
         layanan: data.layanan
     });
 
-    const bkdFormatted = placeholderBKD !== null
-        ? Number(placeholderBKD.toFixed(3))
-        : null;
-
     return [
         {
-            /*
-            =========================
-            PLACEHOLDER
-            =========================
-            */
-            placeholderMuatanUji: muatan,
-            placeholderBKD: bkdFormatted,
-
-            /*
-            =========================
-            INPUT AKTUAL
-            =========================
-            */
             lantaiAT: muatan,
             maksGandar: muatan,
-            muatanUji: muatan,
-
-            /*
-            =========================
-            PARAMETER
-            =========================
-            */
+            kapasitasMaksimum: data.kapasitasMaksimum,
             jenisAlat: data.jenisAlat,
             kelas: data.kelas,
-            nilaiE: data.nilaiE,
             layanan: data.layanan,
-
-            /*
-            =========================
-            HASIL & PENGAMATAN
-            =========================
-            */
-            bkd: bkdFormatted,
+            nilaiE: data.nilaiE,
+            bkd: bkd,
             pengamatan: null,
             hasil: null,
-
-            /*
-            =========================
-            UJI TAMBAHAN (IMBUH)
-            =========================
-            */
             perluImbuh: false,
             imbuh: null,
             pengamatanSetelahImbuh: null,
-            imbuh2: null,
-            pengamatanSetelahImbuh2: null,
         }
     ];
 }
