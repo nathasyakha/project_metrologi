@@ -27,6 +27,9 @@ import { generateKebenaranGandarBobotIngsut } from "./calculator/timbanganBobotI
 import { generateKebenaranDacin } from "./calculator/dacin/generateKebenaranDacin";
 import { generateKepekaanDacin } from "./calculator/dacin/generateKepekaanDacin";
 import { generateRepeatabilityDacin } from "./calculator/dacin/generateRepeatabilityDacin";
+import { generateRepeatabilityJembatan } from "./calculator/timbanganJembatan/generateRepeatabilityJembatan";
+import { generateEksentrisitasJembatan } from "./calculator/timbanganJembatan/generateEksentrisitasJembatan";
+import { generatePenyetelanNolJembatan } from "./calculator/timbanganJembatan/generatePenyetelanNolJembatan";
 
 export function runCerapanGenerator(
     instrument: any,
@@ -48,11 +51,11 @@ export function runCerapanGenerator(
             Number(instrument.kapasitasMinimum),
 
         kapasitasMaksimum:
-            instrument.capacityUnit === "kg"
-                ?
-                Number(instrument.kapasitasMaksimum) * 1000
-                :
-                Number(instrument.kapasitasMaksimum),
+            instrument.jenisAlat === "TIMBANGAN_JEMBATAN"
+                ? Number(instrument.kapasitasMaksimum)
+                : instrument.capacityUnit === "kg"
+                    ? Number(instrument.kapasitasMaksimum) * 1000
+                    : Number(instrument.kapasitasMaksimum),
 
 
         nilaiE:
@@ -134,6 +137,12 @@ export function runCerapanGenerator(
             return generateKepekaanDacin(input);
         case "REPEATABILITY_DACIN":
             return generateRepeatabilityDacin(input);
+        case "REPEATABILITY_JEMBATAN":
+            return generateRepeatabilityJembatan(input);
+        case "EKSENTRISITAS_JEMBATAN":
+            return generateEksentrisitasJembatan(input);
+        case "PENYETELAN_NOL_JEMBATAN":
+            return generatePenyetelanNolJembatan(input);
         default:
             return [];
 

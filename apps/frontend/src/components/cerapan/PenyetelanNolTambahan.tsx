@@ -41,7 +41,8 @@ export function CerapanPenyetelanNolTambahan({
             {/* ================================= */}
 
             {
-                section.generator === "PENYETELAN_NOL" &&
+                section.generator === "PENYETELAN_NOL" ||
+                section.generator === "PENYETELAN_NOL_JEMBATAN" &&
                 row.jenisPenyetelNol === "Otomatis" && (
 
                     <tr>

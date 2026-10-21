@@ -1,7 +1,5 @@
-import {
-    bkdRules,
-} from "./bkdRules";
 
+import { bkdRules } from "./bkdRules";
 
 interface FindBKDRuleInput {
     jenisAlat: string;
@@ -9,27 +7,14 @@ interface FindBKDRuleInput {
     pengujian: string;
 }
 
-
 export function findBKDRule(
     input: FindBKDRuleInput
 ) {
-
-    return bkdRules.find(rule =>
-
-        rule.jenisAlat.includes(
-            input.jenisAlat
-        )
-
-        &&
-
-        rule.kelas === input.kelas
-
-        &&
-
-        rule.pengujian.includes(
-            input.pengujian
-        )
-
+    const rule = bkdRules.find(rule =>
+        rule.jenisAlat.includes(input.jenisAlat) &&
+        rule.kelas === input.kelas &&
+        rule.pengujian.includes(input.pengujian)
     );
 
+    return rule;
 }

@@ -1,4 +1,3 @@
-
 import { findBKDRule } from "../../rules/findBKDRules";
 import { hitungBKD } from "../common/hitungBKD";
 
@@ -27,7 +26,8 @@ export function generateRepeatabilityPegas(data: Input) {
         rule,
         titikUji: muatanUji,
         nilaiE: data.nilaiE,
-        layanan: data.layanan
+        layanan: data.layanan,
+        jenisAlat: data.jenisAlat
     });
 
     return Array.from({ length: 3 }, (_, index) => ({

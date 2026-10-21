@@ -1,4 +1,3 @@
-
 import { HandlerContext } from "@/lib/cerapan/types/handler";
 import { hitungBKD } from "@/lib/cerapan/calculator/common/hitungBKD";
 import { findBKDRule } from "@/lib/cerapan/rules/findBKDRules";
@@ -44,7 +43,8 @@ export function handleRepeatability({
                     rule,
                     titikUji: muatanUji,
                     nilaiE: Number(row.nilaiE),
-                    layanan: row.layanan
+                    layanan: row.layanan,
+                    jenisAlat: row.jenisAlat
                 });
 
                 row.bkd =

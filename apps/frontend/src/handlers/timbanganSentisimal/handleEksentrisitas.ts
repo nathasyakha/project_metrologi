@@ -49,7 +49,8 @@ export function handleEksentrisitas({
                         rule,
                         titikUji: muatanUji,
                         nilaiE: Number(row.nilaiE),
-                        layanan: row.layanan
+                        layanan: row.layanan,
+                        jenisAlat: row.jenisAlat
                     });
 
                     row.bkd =

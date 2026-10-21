@@ -52,7 +52,8 @@ export function generateKebenaranGandar(
         rule,
         titikUji: maksGandar,
         nilaiE: data.nilaiE,
-        layanan: data.layanan
+        layanan: data.layanan,
+        jenisAlat: data.jenisAlat
     });
 
     return [

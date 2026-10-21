@@ -118,7 +118,8 @@ export function generateTitikUji(
 
                     nilaiE: data.nilaiE,
 
-                    layanan: data.layanan
+                    layanan: data.layanan,
+                    jenisAlat: data.jenisAlat
 
                 })
 

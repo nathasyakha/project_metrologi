@@ -57,7 +57,8 @@ export function generateKebenaranPegas(data: Input) {
             rule,
             titikUji: muatanUji,
             nilaiE: data.nilaiE,
-            layanan: data.layanan
+            layanan: data.layanan,
+            jenisAlat: data.jenisAlat
         });
 
         return {

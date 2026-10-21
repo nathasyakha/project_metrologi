@@ -78,7 +78,8 @@ export function generateKebenaran(
                         data.nilaiE,
 
                     layanan:
-                        data.layanan
+                        data.layanan,
+                    jenisAlat: data.jenisAlat
                 });
 
 

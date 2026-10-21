@@ -36,7 +36,8 @@ export function generateEksentrisitasPegas(
         rule,
         titikUji: muatanUji,
         nilaiE: data.nilaiE,
-        layanan: data.layanan
+        layanan: data.layanan,
+        jenisAlat: data.jenisAlat
     });
 
     const jumlahPosisi = 4;

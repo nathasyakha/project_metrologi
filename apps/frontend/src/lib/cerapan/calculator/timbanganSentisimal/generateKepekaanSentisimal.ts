@@ -29,7 +29,8 @@ export function generateKepekaanSentisimal(
         rule,
         titikUji: muatan,
         nilaiE: data.nilaiE,
-        layanan: data.layanan
+        layanan: data.layanan,
+        jenisAlat: data.jenisAlat
     });
     return [
         {

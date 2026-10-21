@@ -64,7 +64,8 @@ export function handleKebenaranEksentrisitas({
                         row.nilaiE
                     ),
                 layanan:
-                    row.layanan
+                    row.layanan,
+                jenisAlat: row.jenisAlat
             });
 
         updated[index].bkd =

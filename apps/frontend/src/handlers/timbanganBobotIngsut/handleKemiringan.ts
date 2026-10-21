@@ -51,7 +51,8 @@ export function handleKemiringan({
                         rule,
                         titikUji: muatanUji,
                         nilaiE: Number(row.nilaiE),
-                        layanan: row.layanan
+                        layanan: row.layanan,
+                        jenisAlat: row.jenisAlat
                     });
                     row.bkd = bkd !== null ? Number(bkd.toFixed(3)) : null;
                 } else {

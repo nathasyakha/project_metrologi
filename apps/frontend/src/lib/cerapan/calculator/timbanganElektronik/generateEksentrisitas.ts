@@ -102,7 +102,8 @@ export function generateEksentrisitas(
                         data.nilaiE,
 
                     layanan:
-                        data.layanan
+                        data.layanan,
+                    jenisAlat: data.jenisAlat
 
                 });
 

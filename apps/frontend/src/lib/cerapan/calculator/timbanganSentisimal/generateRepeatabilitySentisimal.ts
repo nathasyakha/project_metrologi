@@ -29,7 +29,8 @@ export function generateRepeatabilitySentisimal(
         rule,
         titikUji: muatan,
         nilaiE: data.nilaiE,
-        layanan: data.layanan
+        layanan: data.layanan,
+        jenisAlat: data.jenisAlat
     });
 
     return Array.from({ length: 3 }, (_, index) => {
