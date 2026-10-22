@@ -1,44 +1,57 @@
-
+import { evaluasiJenisPenyetelNol } from "@/lib/cerapan/calculator/timbanganElektronik/evaluasiJenisPenyetelNol";
+import { evaluasiPenyetelanNol } from "@/lib/cerapan/calculator/timbanganElektronik/evaluasiPenyetelNol";
 import { HandlerContext } from "@/lib/cerapan/types/handler";
 
 export function handlePenyetelanNol({
     key,
+    value,
     updated,
     index
 }: HandlerContext) {
-    if (
-        key !== "pemeriksaan" &&
-        key !== "jenisPenyetelNol"
-    ) {
-        return;
-    }
-
-    if (!Array.isArray(updated) || updated.length === 0) {
-        return;
-    }
-
     const row = updated[index];
+
     if (!row) return;
 
     /*
-    ==================================
-    PENENTUAN JENIS PENYETELAN NOL
-    ==================================
+    ==========================
+    PILIH JENIS PENYETEL NOL
+    ==========================
     */
 
     if (key === "pemeriksaan") {
-        switch (row.pemeriksaan) {
-            case "BERUBAH":
-                row.jenisPenyetelNol = "OTOMATIS";
-                break;
+        const jenis = evaluasiJenisPenyetelNol(value);
 
-            case "TIDAK_BERUBAH":
-                row.jenisPenyetelNol = "SEMI OTOMATIS";
-                break;
+        row.jenisPenyetelNol = jenis.jenisPenyetelNol;
+        row.hasil = null;
+        return;
+    }
 
-            default:
-                row.jenisPenyetelNol = null;
-                break;
-        }
+    /*
+    ==========================
+    OTOMATIS
+    ==========================
+    */
+
+    if (
+        key === "penunjukanOtomatis10e" ||
+        key === "penunjukanOtomatis025e" ||
+        key === "penunjukanOtomatis05e"
+    ) {
+        evaluasiPenyetelanNol(row);
+        return;
+    }
+
+    /*
+    ==========================
+    SEMI OTOMATIS
+    ==========================
+    */
+
+    if (
+        key === "penunjukanSM10e" ||
+        key === "penunjukanSM025e" ||
+        key === "penunjukanSM05e"
+    ) {
+        evaluasiPenyetelanNol(row);
     }
 }

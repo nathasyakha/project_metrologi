@@ -30,6 +30,8 @@ import { generateRepeatabilityDacin } from "./calculator/dacin/generateRepeatabi
 import { generateRepeatabilityJembatan } from "./calculator/timbanganJembatan/generateRepeatabilityJembatan";
 import { generateEksentrisitasJembatan } from "./calculator/timbanganJembatan/generateEksentrisitasJembatan";
 import { generatePenyetelanNolJembatan } from "./calculator/timbanganJembatan/generatePenyetelanNolJembatan";
+import { generatePenyetelTaraJembatan } from "./calculator/timbanganJembatan/generatePenyetelTaraJembatan";
+import { generateKebenaranJembatan } from "./calculator/timbanganJembatan/generateKebenaranJembatan";
 
 export function runCerapanGenerator(
     instrument: any,
@@ -143,6 +145,10 @@ export function runCerapanGenerator(
             return generateEksentrisitasJembatan(input);
         case "PENYETELAN_NOL_JEMBATAN":
             return generatePenyetelanNolJembatan(input);
+        case "PENYETELAN_TARA_JEMBATAN":
+            return generatePenyetelTaraJembatan(input);
+        case "KEBENARAN_JEMBATAN":
+            return generateKebenaranJembatan(input);
         default:
             return [];
 

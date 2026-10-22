@@ -151,14 +151,10 @@ export const timbanganJembatan: CerapanTemplate = {
                 "BKD",
             columns: [
                 {
-                    key:
-                        "nomor",
-                    label:
-                        "No",
-                    type:
-                        "number",
-                    readonly:
-                        true
+                    key: "nomor",
+                    label: "No",
+                    type: "text",
+                    readonly: true
                 },
                 {
                     key:
@@ -175,9 +171,9 @@ export const timbanganJembatan: CerapanTemplate = {
                     key:
                         "ballast",
                     label:
-                        "Ballast (kg)",
+                        "Ballast",
                     type:
-                        "number"
+                        "text"
                 },
                 {
                     key:
@@ -327,7 +323,7 @@ export const timbanganJembatan: CerapanTemplate = {
                     key:
                         "bkd",
                     label:
-                        "BKD (g)",
+                        "BKD (kg)",
                     type:
                         "number",
                     readonly:
@@ -425,7 +421,7 @@ export const timbanganJembatan: CerapanTemplate = {
                     key:
                         "langkah",
                     label:
-                        "ATS sekitar 20% Max (g)",
+                        "ATS sekitar 20% Max (kg)",
                     type:
                         "text",
                     readonly:
@@ -446,7 +442,16 @@ export const timbanganJembatan: CerapanTemplate = {
                     key:
                         "imbuh10e",
                     label:
-                        "+ Imbuh 10e (g)",
+                        "+ Imbuh 10e (kg)",
+                    type:
+                        "number",
+                    readonly: true
+                },
+                {
+                    key:
+                        "penunjukan10e",
+                    label:
+                        "Penunjukan (kg)",
                     type:
                         "number"
                 },
@@ -454,7 +459,16 @@ export const timbanganJembatan: CerapanTemplate = {
                     key:
                         "imbuh025e",
                     label:
-                        "+ Imbuh 0,25e (g)",
+                        "+ Imbuh 0,25e (kg)",
+                    type:
+                        "number",
+                    readonly: true
+                },
+                {
+                    key:
+                        "penunjukan025e",
+                    label:
+                        "Penunjukan (kg)",
                     type:
                         "number"
                 },
@@ -462,7 +476,16 @@ export const timbanganJembatan: CerapanTemplate = {
                     key:
                         "imbuh05e",
                     label:
-                        "+ Imbuh 0,5e (g)",
+                        "+ Imbuh 0,5e (kg)",
+                    type:
+                        "number",
+                    readonly: true
+                },
+                {
+                    key:
+                        "penunjukan05e",
+                    label:
+                        "Penunjukan (kg)",
                     type:
                         "number"
                 },

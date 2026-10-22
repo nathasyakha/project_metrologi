@@ -32,7 +32,10 @@ export function CerapanPenyetelanNolTambahan({
 
 }: Props) {
 
-
+    const satuan =
+        section.generator === "PENYETELAN_NOL_JEMBATAN"
+            ? "kg"
+            : "g";
     return (
 
         <>
@@ -56,25 +59,25 @@ export function CerapanPenyetelanNolTambahan({
 
                                     <tr >
                                         <th className="border px-3 py-2 w-[12%]">
-                                            ATS Sekitar 2% Max (g)
+                                            ATS Sekitar 2% Max ({satuan})
                                         </th>
                                         <th className="border px-3 py-2 w-[12%]">
                                             Penyetel Bekerja
                                         </th>
                                         <th className="border px-3 py-2 w-[15%]">
-                                            + imbuh 10e (g)
+                                            + imbuh 10e ({satuan})
                                         </th>
 
                                         <th className="border px-3 py-2 w-[15%]">
-                                            Penunjukan (g)
+                                            Penunjukan ({satuan})
                                         </th>
 
                                         <th className="border px-3 py-2 w-[15%]">
-                                            + imbuh 0,25e (g)
+                                            + imbuh 0,25e ({satuan})
                                         </th>
 
                                         <th className="border px-3 py-2 w-[15%]">
-                                            Penunjukan (g)
+                                            Penunjukan ({satuan})
                                         </th>
 
                                         <th className="border px-3 py-2 w-[20%]">
@@ -82,11 +85,11 @@ export function CerapanPenyetelanNolTambahan({
                                         </th>
 
                                         <th className="border px-3 py-2 w-[15%]">
-                                            + imbuh 0,5e (g)
+                                            + imbuh 0,5e ({satuan})
                                         </th>
 
                                         <th className="border px-3 py-2 w-[15%]">
-                                            Penunjukan (g)
+                                            Penunjukan ({satuan})
                                         </th>
 
                                         <th className="border px-3 py-2 w-[20%]">
@@ -247,7 +250,8 @@ export function CerapanPenyetelanNolTambahan({
                 )
             }
             {
-                section.generator === "PENYETELAN_NOL" &&
+                section.generator === "PENYETELAN_NOL" ||
+                section.generator === "PENYETELAN_NOL_JEMBATAN" &&
                 row.jenisPenyetelNol === "Semi otomatis" && (
 
                     <tr>
@@ -261,25 +265,25 @@ export function CerapanPenyetelanNolTambahan({
                                     <tr >
 
                                         <th className="border px-3 py-2 w-[15%]">
-                                            + imbuh 10e (g)
+                                            + imbuh 10e ({satuan})
                                         </th>
                                         <th className="border px-3 py-2 w-[15%]">
-                                            Penunjukan (g)
+                                            Penunjukan ({satuan})
                                         </th>
                                         <th className="border px-3 py-2 w-[15%]">
-                                            + imbuh 0,25e (g)
+                                            + imbuh 0,25e ({satuan})
                                         </th>
                                         <th className="border px-3 py-2 w-[15%]">
-                                            Penunjukan (g)
+                                            Penunjukan ({satuan})
                                         </th>
                                         <th className="border px-3 py-2 w-[20%]">
                                             Pengamatan
                                         </th>
                                         <th className="border px-3 py-2 w-[15%]">
-                                            + imbuh 0,5e (g)
+                                            + imbuh 0,5e ({satuan})
                                         </th>
                                         <th className="border px-3 py-2 w-[15%]">
-                                            Penunjukan (g)
+                                            Penunjukan ({satuan})
                                         </th>
                                         <th className="border px-3 py-2 w-[20%]">
                                             Pengamatan
