@@ -1,7 +1,7 @@
 import Elysia, { t, status as httpError } from 'elysia';
 import { db } from '../db';
-import { certificates, testObservations, instruments, instrumentOwners, peneraanApplications } from '../db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { certificates, testObservations, instruments, instrumentOwners, peneraanApplications, peneraanApplicationInstruments } from '../db/schema';
+import { eq, desc, and } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import type { JwtPayload } from '../middleware/auth';
 
@@ -88,7 +88,9 @@ export const certificateRoutes = new Elysia({
       const suffix = (crypto.randomUUID().split('-')[0] ?? 'XXXXXXXX').toUpperCase();
       const certificateNumber = body.certificateNumber ?? `CERT-${year}-${suffix}`;
 
+
       await db.transaction(async (tx) => {
+        // 1. Simpan sertifikat untuk hasil pengujian ini.
         await tx.insert(certificates).values({
           id,
           observationId: body.observationId,
@@ -97,12 +99,107 @@ export const certificateRoutes = new Elysia({
           expiryDate: expiry,
         });
 
-        // ⬇️ TAMBAHAN: cari permohonan yang terhubung ke observation ini, tandai SELESAI
-        await tx
-          .update(peneraanApplications)
-          .set({ status: 'SELESAI' })
-          .where(eq(peneraanApplications.testObservationId, body.observationId));
+        // 2. Cari detail alat yang terkait dengan hasil pengujian.
+        if (observation.applicationInstrumentId) {
+          const [detail] = await tx
+            .select({
+              id: peneraanApplicationInstruments.id,
+              applicationId: peneraanApplicationInstruments.applicationId,
+            })
+            .from(peneraanApplicationInstruments)
+            .where(
+              eq(
+                peneraanApplicationInstruments.id,
+                observation.applicationInstrumentId
+              )
+            )
+            .limit(1);
+
+          if (detail) {
+            // 3. Sertifikat sudah diterbitkan untuk alat ini.
+            // Tandai detail alat sebagai SELESAI.
+            await tx
+              .update(peneraanApplicationInstruments)
+              .set({ status: "SELESAI" })
+              .where(
+                eq(
+                  peneraanApplicationInstruments.id,
+                  detail.id
+                )
+              );
+
+            // 4. Pastikan seluruh alat sudah memiliki sertifikat aktif.
+            const details = await tx
+              .select({
+                id: peneraanApplicationInstruments.id,
+              })
+              .from(peneraanApplicationInstruments)
+              .where(
+                eq(
+                  peneraanApplicationInstruments.applicationId,
+                  detail.applicationId
+                )
+              );
+
+            const allCertified = details.length > 0 &&
+              (await Promise.all(
+                details.map(async (item) => {
+                  const [obs] = await tx
+                    .select({ id: testObservations.id })
+                    .from(testObservations)
+                    .where(
+                      and(
+                        eq(
+                          testObservations.applicationInstrumentId,
+                          item.id
+                        ),
+                        eq(testObservations.status, "SAH")
+                      )
+                    )
+                    .limit(1);
+
+                  if (!obs) return false;
+
+                  const [cert] = await tx
+                    .select({ id: certificates.id })
+                    .from(certificates)
+                    .where(
+                      and(
+                        eq(certificates.observationId, obs.id),
+                        eq(certificates.status, "active")
+                      )
+                    )
+                    .limit(1);
+
+                  return Boolean(cert);
+                })
+              )).every(Boolean);
+
+            // 4. Selesaikan permohonan hanya jika semua alat
+            // sudah memiliki hasil SAH dan sertifikat aktif.
+            if (allCertified) {
+              await tx
+                .update(peneraanApplications)
+                .set({ status: "SELESAI" })
+                .where(
+                  eq(peneraanApplications.id, detail.applicationId)
+                );
+            }
+          }
+        } else {
+          // Kompatibilitas untuk permohonan lama.
+          await tx
+            .update(peneraanApplications)
+            .set({ status: "SELESAI" })
+            .where(
+              eq(
+                peneraanApplications.testObservationId,
+                body.observationId
+              )
+            );
+        }
       });
+
 
       const [created] = await db
         .select()

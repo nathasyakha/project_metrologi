@@ -1,4 +1,4 @@
-import { mysqlTable, varchar, int, timestamp, json, text, mysqlEnum, decimal, boolean, longtext } from 'drizzle-orm/mysql-core';
+import { mysqlTable, varchar, int, timestamp, json, text, mysqlEnum, decimal, boolean, longtext, uniqueIndex, index } from 'drizzle-orm/mysql-core';
 
 export const roles = ['admin', 'petugas_penera', 'pemilik_alat', 'kepala', 'staf', 'pengamat_tera', 'pengawas'] as const;
 
@@ -21,6 +21,18 @@ export const jenisAlatUttp = [
   "METER_KWH",
   "ANAK_TIMBANGAN"
 ] as const;
+
+export const statusPermohonan = [
+  'MENUNGGU_VERIFIKASI',
+  'DIJADWALKAN',
+  'DIPROSES',
+  'TIDAK_LULUS_UJI',
+  'SELESAI',
+  'DITOLAK',
+] as const;
+
+export const jenisLayananPeneraan = ['TERA', 'TERA_ULANG'] as const;
+export const lokasiPeneraan = ['KANTOR', 'TEMPAT_PAKAI'] as const;
 
 export const users = mysqlTable('users', {
 
@@ -62,16 +74,76 @@ export const instruments = mysqlTable('instruments', {
   brand: varchar('brand', { length: 100 }).notNull(),
   type: varchar('type', { length: 100 }),
   serialNumber: varchar('serial_number', { length: 100 }),
-  capacityValue: decimal('capacity_value', { precision: 10, scale: 2 }).notNull(),
-  capacityUnit: mysqlEnum('capacity_unit', capacityUnit).notNull(),
-  dayabaca: decimal('dayabaca', { precision: 10, scale: 5 }).notNull(),
-  dayabacaUnit: mysqlEnum('dayabaca_unit', capacityUnit).notNull(),
-  class: mysqlEnum('class', ['I', 'II', 'III', 'IIII']).notNull(),
   registeredby: varchar('registered_by', { length: 36 }).references(() => users.id),
   registeredAt: timestamp('registered_at').defaultNow(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });
+
+
+export const instrumentsMassa = mysqlTable('instruments_massa', {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  instrumentId: varchar("instrument_id", { length: 36 }).notNull().references(() => instruments.id),
+  capacityValue: decimal("capacity_value", { precision: 10, scale: 2 }).notNull(),
+  capacityUnit: mysqlEnum("capacity_unit", capacityUnit).notNull(),
+  dayabaca: decimal("dayabaca", { precision: 10, scale: 5 }).notNull(),
+  dayabacaUnit: mysqlEnum("dayabaca_unit", capacityUnit).notNull(),
+  class: mysqlEnum("class", ["I", "II", "III", "IIII"]).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
+},
+  (table) => [
+    uniqueIndex("instruments_massa_instrument_id_unique").on(table.instrumentId)
+  ]
+);
+
+export const pubbmStations = mysqlTable('pubbm_stations', {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  ownerId: varchar("owner_id", { length: 36 }).notNull().references(() => instrumentOwners.id),
+  nomorSPBU: varchar("nomor_spbu", { length: 30 }).notNull(),
+  address: text("address").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
+},
+  (table) => [
+    uniqueIndex("pubbm_stations_owner_id_unique").on(table.ownerId),
+    uniqueIndex("pubbm_stations_nomor_spbu_unique").on(table.nomorSPBU)
+  ]
+);
+
+
+export const instrumentsPubbm = mysqlTable('instruments_pubbm', {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  instrumentId: varchar("instrument_id", { length: 36 }).notNull().references(() => instruments.id),
+  stationId: varchar("station_id", { length: 36 }).notNull().references(() => pubbmStations.id),
+  lajuAlirMaksimum: decimal("laju_alir_maksimum", { precision: 10, scale: 3 }),
+  lajuAlirMinimum: decimal("laju_alir_minimum", { precision: 10, scale: 3 }),
+  jenisCairan: varchar("jenis_cairan", { length: 100 }),
+  identifikasiNozzle: varchar("identifikasi_nozzle", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
+},
+  (table) => [
+    uniqueIndex("instruments_pubbm_instrument_id_unique")
+      .on(table.instrumentId)
+  ]
+);
+
+export const peneraanApplicationInstruments = mysqlTable('peneraan_application_instruments',
+  {
+    id: varchar("id", { length: 36 }).primaryKey(),
+    applicationId: varchar("application_id", { length: 36 }).notNull().references(() => peneraanApplications.id),
+    instrumentId: varchar("instrument_id", { length: 36 }).notNull().references(() => instruments.id),
+    status: mysqlEnum("status", statusPermohonan).notNull().default("DIJADWALKAN"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
+  },
+  (table) => [
+    uniqueIndex("application_instrument_unique").on(table.applicationId, table.instrumentId),
+    index("application_instruments_application_idx").on(table.applicationId),
+    index("application_instruments_instrument_idx").on(table.instrumentId),
+  ]
+);
 
 export const testObservations = mysqlTable('test_observations', {
   id: varchar('id', { length: 36 }).primaryKey(),
@@ -81,6 +153,7 @@ export const testObservations = mysqlTable('test_observations', {
   status: mysqlEnum('status', ['SAH', 'BATAL']).notNull(), // Sah / Batal
   testedAt: timestamp('tested_at').defaultNow(),
   createdAt: timestamp('created_at').defaultNow(),
+  applicationInstrumentId: varchar("application_instrument_id", { length: 36 }).references(() => peneraanApplicationInstruments.id),
 });
 
 export const certificates = mysqlTable('certificates', {
@@ -139,18 +212,6 @@ export const pengawasanCerapan = mysqlTable('pengawasan_cerapan', {
   data: json('data').notNull(), // bentuk bebas, ditentukan frontend per jenis pengujian
   createdAt: timestamp('created_at').defaultNow(),
 });
-
-export const statusPermohonan = [
-  'MENUNGGU_VERIFIKASI',
-  'DIJADWALKAN',
-  'DIPROSES',
-  'TIDAK_LULUS_UJI',
-  'SELESAI',
-  'DITOLAK',
-] as const;
-
-export const jenisLayananPeneraan = ['TERA', 'TERA_ULANG'] as const;
-export const lokasiPeneraan = ['KANTOR', 'TEMPAT_PAKAI'] as const;
 
 export const peneraanApplications = mysqlTable('peneraan_applications', {
   id: varchar('id', { length: 36 }).primaryKey(),
