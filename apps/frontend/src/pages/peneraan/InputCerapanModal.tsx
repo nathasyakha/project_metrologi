@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import {
-  createObservation,
-  updatePermohonanStatus,
+  createApplicationResult,
   type PermohonanPeneraan,
 } from "@/lib/peneraan";
 import { getErrorMessage } from "@/lib/api";
@@ -73,12 +72,29 @@ export function InputCerapanModal({
 
   if (!isOpen || !permohonan) return null;
 
+
   const onSubmit = async (values: FormValues) => {
+    if (!permohonan.applicationInstrumentId) {
+      Swal.fire(
+        "Data alat tidak lengkap",
+        "ID detail alat tidak ditemukan. Tutup modal dan pilih alat dari daftar tugas.",
+        "error"
+      );
+      return;
+    }
+    if (!permohonan.applicationInstrumentId) {
+      Swal.fire(
+        "Data alat tidak lengkap",
+        "ID detail alat tidak ditemukan. Pilih alat dari daftar tugas.",
+        "error"
+      );
+      return;
+    }
     setLoading(true);
+
     try {
-      // 1. Simpan cerapan pengujian
-      const obs = await createObservation({
-        instrumentId: permohonan.instrumentId,
+      await createApplicationResult(permohonan.id, {
+        applicationInstrumentId: permohonan.applicationInstrumentId,
         status: values.status,
         observationData: {
           kondisiLingkungan: {
@@ -86,9 +102,21 @@ export function InputCerapanModal({
             kelembaban: `${values.kelembaban} %`,
           },
           ujiKebenaran: [
-            { beban: values.bebanUji1, penunjukan: values.penunjukan1, deviasi: values.deviasi1 },
-            { beban: values.bebanUji2, penunjukan: values.penunjukan2, deviasi: values.deviasi2 },
-            { beban: values.bebanUji3, penunjukan: values.penunjukan3, deviasi: values.deviasi3 },
+            {
+              beban: values.bebanUji1,
+              penunjukan: values.penunjukan1,
+              deviasi: values.deviasi1,
+            },
+            {
+              beban: values.bebanUji2,
+              penunjukan: values.penunjukan2,
+              deviasi: values.deviasi2,
+            },
+            {
+              beban: values.bebanUji3,
+              penunjukan: values.penunjukan3,
+              deviasi: values.deviasi3,
+            },
           ],
           ujiTambahan: {
             eksentrisitas: values.ujiSudut,
@@ -99,27 +127,28 @@ export function InputCerapanModal({
         },
       });
 
-      // 2. Update status permohonan ke SELESAI dan tautkan testObservationId
-      await updatePermohonanStatus(permohonan.id, {
-        status: "SELESAI",
-        testObservationId: obs.id,
-        catatan: `Pengujian selesai oleh Petugas. Hasil: ${values.status}`,
-      });
-
-      Swal.fire({
+      await Swal.fire({
         title: "Cerapan Berhasil Disimpan!",
-        text: `Hasil pengujian: ${values.status === "SAH" ? "✅ SAH (Memenuhi Syarat)" : "❌ BATAL (Tidak Sah)"}. Permohonan kini siap untuk proses sertifikat.`,
+        text:
+          values.status === "SAH"
+            ? "Hasil pengujian SAH. Status alat telah diperbarui."
+            : "Hasil pengujian BATAL. Alat dinyatakan tidak memenuhi syarat.",
         icon: values.status === "SAH" ? "success" : "warning",
       });
 
       onSuccess();
       onClose();
     } catch (error) {
-      Swal.fire("Gagal!", getErrorMessage(error, "Terjadi kesalahan saat menyimpan cerapan."), "error");
+      Swal.fire(
+        "Gagal!",
+        getErrorMessage(error, "Terjadi kesalahan saat menyimpan cerapan."),
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 overflow-y-auto">
@@ -281,11 +310,10 @@ export function InputCerapanModal({
             </label>
             <div className="grid grid-cols-2 gap-3">
               <label
-                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
-                  selectedStatus === "SAH"
-                    ? "border-emerald-600 bg-emerald-50/50 text-emerald-950 font-semibold"
-                    : "border-slate-200 hover:bg-slate-50"
-                }`}
+                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${selectedStatus === "SAH"
+                  ? "border-emerald-600 bg-emerald-50/50 text-emerald-950 font-semibold"
+                  : "border-slate-200 hover:bg-slate-50"
+                  }`}
               >
                 <input
                   type="radio"
@@ -303,11 +331,10 @@ export function InputCerapanModal({
               </label>
 
               <label
-                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
-                  selectedStatus === "BATAL"
-                    ? "border-red-600 bg-red-50/50 text-red-950 font-semibold"
-                    : "border-slate-200 hover:bg-slate-50"
-                }`}
+                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${selectedStatus === "BATAL"
+                  ? "border-red-600 bg-red-50/50 text-red-950 font-semibold"
+                  : "border-slate-200 hover:bg-slate-50"
+                  }`}
               >
                 <input
                   type="radio"

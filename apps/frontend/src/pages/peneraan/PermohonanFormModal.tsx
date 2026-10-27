@@ -14,7 +14,7 @@ import {
   type PermohonanPeneraan,
 } from "@/lib/peneraan";
 import { getErrorMessage } from "@/lib/api";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import Swal from "sweetalert2";
 
 interface PermohonanFormModalProps {
@@ -32,7 +32,6 @@ interface PermohonanFormModalProps {
 
 type FormValues = {
   ownerId: string;
-  instrumentId: string;
   layanan: JenisLayanan;
   lokasi: LokasiPeneraan;
   catatan?: string;
@@ -52,6 +51,8 @@ export function PermohonanFormModal({
   onSuccess,
 }: PermohonanFormModalProps) {
   const [loading, setLoading] = useState(false);
+  const [selectedInstrumentIds, setSelectedInstrumentIds] = useState<string[]>([]);
+  const [instrumentToAdd, setInstrumentToAdd] = useState("");
 
   const initialOwnerId = defaultOwnerId || (owners[0]?.id ?? "");
 
@@ -59,13 +60,11 @@ export function PermohonanFormModal({
     register,
     handleSubmit,
     watch,
-    setValue,
-    formState: { errors },
+    formState: { },
     reset,
   } = useForm<FormValues>({
     defaultValues: {
       ownerId: initialOwnerId,
-      instrumentId: "",
       layanan: "TERA_ULANG",
       lokasi: "KANTOR",
       catatan: "",
@@ -80,56 +79,82 @@ export function PermohonanFormModal({
   const filteredInstruments = instruments.filter((inst) => inst.ownerId === selectedOwnerId);
 
   useEffect(() => {
-    if (defaultOwnerId) {
-      setValue("ownerId", defaultOwnerId);
-    }
-  }, [defaultOwnerId, setValue]);
+    setSelectedInstrumentIds([]);
+    setInstrumentToAdd("");
+  }, [selectedOwnerId]);
 
   useEffect(() => {
-    if (filteredInstruments.length > 0 && !filteredInstruments.some(i => i.id === watch("instrumentId"))) {
-      setValue("instrumentId", filteredInstruments[0].id);
-    }
-  }, [selectedOwnerId, filteredInstruments, setValue, watch]);
+    const availableIds = new Set(
+      filteredInstruments.map((inst) => inst.id)
+    );
+
+    setSelectedInstrumentIds((current) => {
+      const validIds = current.filter((id) => availableIds.has(id));
+
+      if (validIds.length > 0) return validIds;
+
+      const firstInstrument = filteredInstruments[0];
+      return firstInstrument ? [firstInstrument.id] : [];
+    });
+  }, [selectedOwnerId, instruments]);
 
   if (!isOpen) return null;
 
+
   const onSubmit = async (values: FormValues) => {
-    if (!values.instrumentId) {
-      Swal.fire("Perhatian", "Silakan pilih alat ukur terlebih dahulu", "warning");
+    if (selectedInstrumentIds.length === 0) {
+      Swal.fire(
+        "Perhatian",
+        "Silakan pilih minimal satu alat ukur.",
+        "warning"
+      );
       return;
     }
 
     setLoading(true);
+
     try {
       await createPermohonan({
         ownerId: values.ownerId,
-        instrumentId: values.instrumentId,
+        instrumentIds: selectedInstrumentIds,
         layanan: values.layanan,
         lokasi: values.lokasi,
         catatan: values.catatan || undefined,
-        jadwalTanggal: values.jadwalTanggal ? new Date(values.jadwalTanggal).toISOString() : undefined,
+        jadwalTanggal: values.jadwalTanggal
+          ? new Date(values.jadwalTanggal).toISOString()
+          : undefined,
         petugasId: values.petugasId || undefined,
       });
 
-      Swal.fire({
+      await Swal.fire({
         title: "Berhasil!",
         text: isAdmin && values.jadwalTanggal
-          ? "Permohonan berhasil didaftarkan dan langsung dijadwalkan."
-          : "Permohonan peneraan berhasil diajukan. Menunggu verifikasi admin.",
+          ? `Permohonan dengan ${selectedInstrumentIds.length} alat berhasil didaftarkan dan dijadwalkan.`
+          : `Permohonan dengan ${selectedInstrumentIds.length} alat berhasil diajukan.`,
         icon: "success",
         timer: 1800,
         showConfirmButton: false,
       });
 
       reset();
+      setSelectedInstrumentIds([]);
+      setInstrumentToAdd("");
       onSuccess();
       onClose();
     } catch (error) {
-      Swal.fire("Gagal!", getErrorMessage(error, "Terjadi kesalahan saat mengajukan permohonan."), "error");
+      Swal.fire(
+        "Gagal!",
+        getErrorMessage(
+          error,
+          "Terjadi kesalahan saat mengajukan permohonan."
+        ),
+        "error"
+      );
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 overflow-y-auto">
@@ -164,48 +189,130 @@ export function PermohonanFormModal({
             </select>
           </div>
 
+
           {/* PEMILIH ALAT UKUR */}
           <div>
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-semibold text-slate-700">
                 Alat Ukur yang Diajukan <span className="text-red-500">*</span>
               </label>
+
               <button
                 type="button"
                 onClick={() => onOpenCreateInstrument(selectedOwnerId)}
-                className="inline-flex items-center text-xs font-medium text-blue-600 hover:text-blue-800"
+                disabled={!selectedOwnerId}
+                className="inline-flex items-center text-xs font-medium text-blue-600 hover:text-blue-800 disabled:opacity-50"
               >
-                <Plus className="h-3 w-3 mr-0.5" /> Daftarkan Alat Baru
+                <Plus className="h-3 w-3 mr-0.5" />
+                Daftarkan Alat Baru
               </button>
             </div>
 
             {filteredInstruments.length === 0 ? (
               <div className="rounded-lg border border-dashed border-amber-300 bg-amber-50/60 p-3 text-xs text-amber-800">
-                Belum ada data alat ukur terdaftar untuk pemilik ini. Silakan klik{" "}
-                <strong
-                  onClick={() => onOpenCreateInstrument(selectedOwnerId)}
-                  className="cursor-pointer underline"
-                >
-                  Daftarkan Alat Baru
-                </strong>{" "}
-                terlebih dahulu.
+                Belum ada alat ukur terdaftar untuk pemilik ini.
+                Silakan daftarkan alat terlebih dahulu.
               </div>
             ) : (
-              <select
-                {...register("instrumentId", { required: "Alat ukur wajib dipilih" })}
-                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-navy-700 focus:outline-none focus:ring-1 focus:ring-navy-700"
-              >
-                {filteredInstruments.map((inst) => (
-                  <option key={inst.id} value={inst.id}>
-                    {inst.brand} {inst.type ? `(${inst.type})` : ""} - Kap: {inst.capacityValue} {inst.capacityUnit} (Kelas {inst.class})
-                  </option>
-                ))}
-              </select>
-            )}
-            {errors.instrumentId && (
-              <p className="text-xs text-red-500 mt-1">{errors.instrumentId.message}</p>
+              <>
+                <div className="space-y-2">
+                  {selectedInstrumentIds.map((id, index) => {
+                    const inst = filteredInstruments.find(
+                      (item) => item.id === id
+                    );
+
+                    if (!inst) return null;
+
+                    return (
+                      <div
+                        key={id}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-slate-800">
+                            Alat {index + 1}: {inst.brand}
+                          </p>
+                          <p className="text-xs text-slate-600">
+                            {inst.jenisAlat.replaceAll("_", " ")}
+                            {inst.type ? ` · Tipe ${inst.type}` : ""}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            Nomor seri: {inst.serialNumber || "-"}
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedInstrumentIds((current) =>
+                              current.filter((itemId) => itemId !== id)
+                            )
+                          }
+                          className="shrink-0 rounded-md p-1.5 text-red-600 hover:bg-red-50"
+                          aria-label={`Hapus alat ${inst.brand}`}
+                          title="Hapus alat"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-3 flex items-center gap-2">
+                  <select
+                    value={instrumentToAdd}
+                    onChange={(event) => setInstrumentToAdd(event.target.value)}
+                    className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-navy-700 focus:outline-none"
+                  >
+                    <option value="">-- Pilih alat untuk ditambahkan --</option>
+
+                    {filteredInstruments
+                      .filter(
+                        (inst) => !selectedInstrumentIds.includes(inst.id)
+                      )
+                      .map((inst) => (
+                        <option key={inst.id} value={inst.id}>
+                          {inst.brand}
+                          {inst.type ? ` (${inst.type})` : ""}
+                          {" - "}
+                          {inst.serialNumber || "Tanpa nomor seri"}
+                        </option>
+                      ))}
+                  </select>
+
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={
+                      !instrumentToAdd ||
+                      selectedInstrumentIds.includes(instrumentToAdd)
+                    }
+                    onClick={() => {
+                      if (!instrumentToAdd) return;
+
+                      setSelectedInstrumentIds((current) =>
+                        current.includes(instrumentToAdd)
+                          ? current
+                          : [...current, instrumentToAdd]
+                      );
+
+                      setInstrumentToAdd("");
+                    }}
+                  >
+                    <Plus className="mr-1 h-4 w-4" />
+                    Tambah
+                  </Button>
+                </div>
+
+                <p className="mt-2 text-xs text-slate-500">
+                  {selectedInstrumentIds.length} alat dipilih.
+                  Semua alat harus berasal dari pemilik yang sama.
+                </p>
+              </>
             )}
           </div>
+
 
           {/* JENIS LAYANAN & LOKASI */}
           <div className="grid grid-cols-2 gap-4">
@@ -289,7 +396,10 @@ export function PermohonanFormModal({
             <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
               Batal
             </Button>
-            <Button type="submit" disabled={loading || filteredInstruments.length === 0}>
+            <Button
+              type="submit"
+              disabled={loading || selectedInstrumentIds.length === 0}
+            >
               {loading ? "Memproses..." : "Ajukan Permohonan"}
             </Button>
           </div>

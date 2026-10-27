@@ -305,7 +305,31 @@ export function PeneraanPage1() {
     };
 
     const filteredInstruments = instruments;
-
+    const tugasList: PermohonanPeneraan[] = (
+        permohonanList ?? []
+    ).flatMap((app) =>
+        (app.instruments ?? [])
+            .filter(
+                (detail) =>
+                    Boolean(detail.id) &&
+                    Boolean(detail.status) &&
+                    Boolean(detail.instrumentId)
+            )
+            .map((detail) => ({
+                ...app,
+                applicationInstrumentId: detail.id!,
+                instrumentId: detail.instrumentId,
+                status: detail.status!,
+                instrumentJenisAlat:
+                    detail.jenisAlat ?? undefined,
+                instrumentBrand:
+                    detail.brand ?? undefined,
+                instrumentType:
+                    detail.type ?? undefined,
+                instrumentSerial:
+                    detail.serialNumber ?? undefined,
+            }))
+    );
     const permohonanColumns = getPermohonanColumns({
         isAdmin,
         isInspector,
@@ -504,7 +528,7 @@ export function PeneraanPage1() {
                                     }
                                 })
                             }
-                            data={permohonanList}
+                            data={tugasList}
                         />
                     </CardBody>
                 </Card>

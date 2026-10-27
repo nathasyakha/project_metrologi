@@ -147,6 +147,7 @@ export type Certificate = {
 
 export type PermohonanPeneraan = {
   id: string;
+  applicationInstrumentId?: string;
   applicationNumber: string;
   ownerId: string;
   instrumentId: string;
@@ -160,6 +161,17 @@ export type PermohonanPeneraan = {
   createdBy?: string | null;
   createdAt: string;
   updatedAt: string;
+
+  instruments?: Array<{
+    id?: string;
+    applicationId?: string;
+    instrumentId: string;
+    status?: StatusPermohonan;
+    jenisAlat?: JenisAlatUttp | null;
+    brand?: string | null;
+    type?: string | null;
+    serialNumber?: string | null;
+  }>;
 
   // Joined fields
   companyName?: string;
@@ -211,15 +223,18 @@ export async function fetchPermohonanDetail(id: string) {
   return data.data;
 }
 
+
 export type CreatePermohonanInput = {
   ownerId: string;
-  instrumentId: string;
+  instrumentIds?: string[];
+  instrumentId?: string; // kompatibilitas untuk permohonan satu alat
   layanan: JenisLayanan;
   lokasi: LokasiPeneraan;
   catatan?: string;
   jadwalTanggal?: string;
   petugasId?: string;
 };
+
 
 export async function createPermohonan(input: CreatePermohonanInput) {
   const { data } = await api.post<{ message: string; data: PermohonanPeneraan }>("/permohonan", input);
@@ -388,3 +403,31 @@ export async function editPermohonan(id: string, input: EditPermohonanInput) {
   const { data } = await api.patch<{ message: string; data: PermohonanPeneraan }>(`/permohonan/${id}/edit`, input);
   return data.data;
 }
+
+
+export type CreateApplicationResultInput = {
+  applicationInstrumentId: string;
+  status: "SAH" | "BATAL";
+  observationData: Record<string, any>;
+};
+
+export type CreateApplicationResultResponse = {
+  application: PermohonanPeneraan;
+  applicationInstrumentId: string;
+  instrumentId: string;
+  observationId: string;
+  instrumentStatus: StatusPermohonan;
+};
+
+export async function createApplicationResult(
+  applicationId: string,
+  input: CreateApplicationResultInput
+) {
+  const { data } = await api.post<{
+    message: string;
+    data: CreateApplicationResultResponse;
+  }>(`/permohonan/${applicationId}/hasil`, input);
+
+  return data.data;
+}
+

@@ -79,34 +79,55 @@ export function getPermohonanColumns(
                     label,
                 })),
             },
+
             cell: ({ row }) => {
                 const item = row.original;
+
+                const alatList = item.instruments?.length
+                    ? item.instruments
+                    : [{
+                        instrumentId: item.instrumentId,
+                        jenisAlat: item.instrumentJenisAlat,
+                        brand: item.instrumentBrand,
+                        type: item.instrumentType,
+                        serialNumber: item.instrumentSerial,
+                    }];
+
                 return (
-                    <div>
-                        {
-                            item.instrumentJenisAlat && (
+                    <div className="space-y-2 min-w-[180px]">
+                        {alatList.map((alat, index) => (
+                            <div
+                                key={alat.id ?? alat.instrumentId ?? index}
+                                className="rounded-md border border-slate-200 px-2.5 py-2"
+                            >
                                 <div className="font-medium text-slate-900">
-                                    {
-                                        jenisAlatLabel[
-                                        item.instrumentJenisAlat as keyof typeof jenisAlatLabel
+                                    {alat.jenisAlat
+                                        ? jenisAlatLabel[
+                                        alat.jenisAlat as keyof typeof jenisAlatLabel
                                         ]
-                                    }
+                                        : "Jenis alat tidak tersedia"}
                                 </div>
-                            )
-                        }
-                        <div className="text-[11px] text-slate-400 font-mono">
-                            {item.instrumentBrand}
-                            {
-                                item.instrumentType
-                                    ? ` / ${item.instrumentType}`
-                                    : ""
-                            }
-                            {" / "}
-                            {item.instrumentSerial || "-"}
-                        </div>
+
+                                <div className="text-[11px] text-slate-500">
+                                    Merek: {alat.brand || "-"}
+                                    {alat.type ? ` / Tipe: ${alat.type}` : ""}
+                                </div>
+
+                                <div className="text-[11px] text-slate-400 font-mono">
+                                    SN: {alat.serialNumber || "-"}
+                                </div>
+
+                                {alatList.length > 1 && (
+                                    <div className="mt-1 text-[10px] text-slate-500">
+                                        Alat {index + 1}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 );
             },
+
         },
         {
             header: "Layanan / Lokasi",

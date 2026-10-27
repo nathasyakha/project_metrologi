@@ -1,18 +1,31 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { X, Search, CheckCircle2, UserX } from "lucide-react";
+import {
+    useMutation,
+    useQuery,
+    useQueryClient
+} from "@tanstack/react-query";
+import {
+    X,
+    CheckCircle2,
+} from "lucide-react";
 import { jenisAlatLabel } from "@/lib/peneraan";
 import Swal from "sweetalert2";
 
-// --- 1. SKEMA VALIDASI ZOD ---
-// Sesuaikan array enum ini dengan database Drizzle Anda
-const capacityUnits = ["kg", "g", "mg", "L", "mL", "m", "cm"] as const;
+// ==========================================
+// KONFIGURASI
+// ==========================================
+
+const capacityUnits = [
+    "kg", "g", "mg", "L", "mL", "m", "cm"
+] as const;
+
 const jenisLayanan = ["TERA", "TERA_ULANG"] as const;
 const lokasiPeneraan = ["KANTOR", "TEMPAT_PAKAI"] as const;
 const kelasAlat = ["I", "II", "III", "IIII"] as const;
+
 const jenisAlatUttp = [
     "TIMBANGAN_ELEKTRONIK",
     "TIMBANGAN_MEJA",
@@ -29,43 +42,148 @@ const jenisAlatUttp = [
     "ANAK_TIMBANGAN"
 ] as const;
 
+const isEmpty = (value: unknown) =>
+    value === undefined ||
+    value === null ||
+    value === "";
+
+// ==========================================
+// SKEMA VALIDASI
+// Field wajib dibedakan berdasarkan kategori.
+// ==========================================
+
+const alatSchema = z.object({
+    instrumentId: z.string().optional(),
+
+    jenisAlat: z.enum(jenisAlatUttp, {
+        required_error: "Jenis alat wajib dipilih"
+    }),
+
+    brand: z.string().optional(),
+    type: z.string().optional(),
+    serialNumber: z.string().optional(),
+
+    capacityValue: z.preprocess(
+        value => isEmpty(value) ? undefined : value,
+        z.coerce.number().positive("Kapasitas harus lebih dari 0").optional()
+    ),
+    capacityUnit: z.enum(capacityUnits).optional(),
+
+    dayabaca: z.preprocess(
+        value => isEmpty(value) ? undefined : value,
+        z.coerce.number().positive("Daya baca harus lebih dari 0").optional()
+    ),
+    dayabacaUnit: z.enum(capacityUnits).optional(),
+    class: z.enum(kelasAlat).optional(),
+
+    nomorSPBU: z.string().optional(),
+    stationAddress: z.string().optional(),
+
+    lajuAlirMaksimum: z.preprocess(
+        value => isEmpty(value) ? undefined : value,
+        z.coerce.number().positive().optional()
+    ),
+    lajuAlirMinimum: z.preprocess(
+        value => isEmpty(value) ? undefined : value,
+        z.coerce.number().positive().optional()
+    ),
+
+    jenisCairan: z.string().optional(),
+    identifikasiNozzle: z.string().optional()
+}).superRefine((alat, ctx) => {
+    const error = (field: string, message: string) => {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: [field],
+            message
+        });
+    };
+
+    if (!alat.brand?.trim()) {
+        error("brand", "Merek alat wajib diisi");
+    }
+
+    if (alat.jenisAlat === "POMPA_UKUR_BBM") {
+        if (!alat.nomorSPBU?.trim()) {
+            error("nomorSPBU", "Nomor SPBU wajib diisi");
+        }
+
+        if (!alat.stationAddress?.trim()) {
+            error("stationAddress", "Alamat SPBU wajib diisi");
+        }
+
+        if (
+            alat.lajuAlirMinimum != null &&
+            alat.lajuAlirMaksimum != null &&
+            alat.lajuAlirMinimum > alat.lajuAlirMaksimum
+        ) {
+            error(
+                "lajuAlirMinimum",
+                "Laju alir minimum tidak boleh melebihi maksimum"
+            );
+        }
+
+        return;
+    }
+
+    if (alat.capacityValue == null) {
+        error("capacityValue", "Kapasitas wajib diisi");
+    }
+    if (!alat.capacityUnit) {
+        error("capacityUnit", "Satuan kapasitas wajib dipilih");
+    }
+    if (alat.dayabaca == null) {
+        error("dayabaca", "Daya baca wajib diisi");
+    }
+    if (!alat.dayabacaUnit) {
+        error("dayabacaUnit", "Satuan daya baca wajib dipilih");
+    }
+    if (!alat.class) {
+        error("class", "Kelas wajib dipilih");
+    }
+});
+
 const registrasiSchema = z.object({
-    // Pemilik
     ownerId: z.string().optional(),
     companyName: z.string().optional(),
     address: z.string().optional(),
     phone: z.string().optional(),
 
-    // Alat Ukur
-    jenisAlat: z.enum(jenisAlatUttp, { required_error: "Jenis alat wajib dipilih" }),
-    brand: z.string().min(1, "Merek wajib diisi"),
-    type: z.string().optional(),
-    serialNumber: z.string().optional(),
-    capacityValue: z.coerce.number({ invalid_type_error: "Kapasitas wajib angka" }).min(0),
-    capacityUnit: z.enum(capacityUnits, { required_error: "Satuan wajib dipilih" }),
-    dayabaca: z.coerce.number({ invalid_type_error: "Daya baca wajib angka" }).min(0),
-    dayabacaUnit: z.enum(capacityUnits, { required_error: "Satuan wajib dipilih" }),
-    class: z.enum(kelasAlat, { required_error: "Kelas wajib dipilih" }),
+    instruments: z.array(alatSchema)
+        .min(1, "Minimal satu alat harus didaftarkan"),
 
-    // Permohonan
     layanan: z.enum(jenisLayanan),
     lokasi: z.enum(lokasiPeneraan),
-    jadwalTanggal: z.string().min(1, "Tanggal wajib diisi"),
+    jadwalTanggal: z.string().min(1, "Tanggal pengujian wajib diisi"),
     petugasId: z.string().min(1, "Petugas wajib dipilih"),
-    catatan: z.string().optional(),
-}).refine(
-    (data) => {
-        // Validasi Bersyarat: Jika ownerId kosong, maka form manual WAJIB diisi
-        if (!data.ownerId) {
-            return !!data.companyName && !!data.address && !!data.phone;
+    catatan: z.string().optional()
+}).superRefine((data, ctx) => {
+    if (!data.ownerId) {
+        if (!data.companyName?.trim()) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["companyName"],
+                message: "Nama pemilik wajib diisi"
+            });
         }
-        return true;
-    },
-    {
-        message: "Lengkapi data pemilik baru (Nama, Alamat, No. HP) jika tidak memilih dari daftar",
-        path: ["companyName"],
+
+        if (!data.address?.trim()) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["address"],
+                message: "Alamat pemilik wajib diisi"
+            });
+        }
+
+        if (!data.phone?.trim()) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["phone"],
+                message: "Nomor telepon wajib diisi"
+            });
+        }
     }
-);
+});
 
 type RegistrasiFormData = z.infer<typeof registrasiSchema>;
 
@@ -75,342 +193,833 @@ interface RegistrasiOfflineFormProps {
     inspectors: any[];
 }
 
-export function RegistrasiOfflineForm({ isOpen, onClose, inspectors }: RegistrasiOfflineFormProps) {
+// ==========================================
+// KOMPONEN REGISTRASI
+// ==========================================
+
+export function RegistrasiOfflineForm({
+    isOpen,
+    onClose,
+    inspectors
+}: RegistrasiOfflineFormProps) {
     const queryClient = useQueryClient();
 
-    // State untuk fitur pencarian pemilik
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [selectedOwner, setSelectedOwner] = useState<any | null>(null);
 
-    // Debounce pencarian agar tidak spam request ke backend
-    useEffect(() => {
-        const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
-        return () => clearTimeout(timer);
-    }, [searchTerm]);
-
-    // Fetch pencarian pemilik
-    const { data: searchResults, isFetching: isSearching } = useQuery({
-        queryKey: ["owners-search", debouncedSearch],
-        queryFn: async () => {
-            if (!debouncedSearch) return [];
-            const res = await fetch(`http://localhost:3000/owners?search=${debouncedSearch}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            });
-            const json = await res.json();
-            return json.data || [];
-        },
-        enabled: debouncedSearch.length > 2,
+    const emptyInstrument = (): RegistrasiFormData["instruments"][number] => ({
+        jenisAlat: "TIMBANGAN_ELEKTRONIK",
+        instrumentId: undefined,
+        brand: "",
+        type: "",
+        serialNumber: "",
+        capacityValue: undefined,
+        capacityUnit: undefined,
+        dayabaca: undefined,
+        dayabacaUnit: undefined,
+        class: undefined,
+        nomorSPBU: "",
+        stationAddress: "",
+        lajuAlirMaksimum: undefined,
+        lajuAlirMinimum: undefined,
+        jenisCairan: "",
+        identifikasiNozzle: ""
     });
 
-    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<RegistrasiFormData>({
+    const {
+        control,
+        register,
+        handleSubmit,
+        setValue,
+        reset,
+        watch,
+        formState: { errors }
+    } = useForm<RegistrasiFormData>({
         resolver: zodResolver(registrasiSchema),
         defaultValues: {
+            ownerId: "",
+            companyName: "",
+            address: "",
+            phone: "",
+            instruments: [emptyInstrument()],
             layanan: "TERA_ULANG",
             lokasi: "KANTOR",
+            jadwalTanggal: "",
+            petugasId: "",
+            catatan: ""
         }
     });
 
-    // Reset semua ketika modal ditutup
+    const {
+        fields: instrumentFields,
+        append: appendInstrument,
+        remove: removeInstrument
+    } = useFieldArray({
+        control,
+        name: "instruments"
+    });
+
+    const instruments = watch("instruments") ?? [];
+
+    const hasPUBBM = instruments.some(
+        instrument => instrument.jenisAlat === "POMPA_UKUR_BBM"
+    );
+
+    // ======================================
+    // PENCARIAN PEMILIK UNTUK FORM MASSA
+    // ======================================
+
+    useEffect(() => {
+        const timer = setTimeout(
+            () => setDebouncedSearch(searchTerm),
+            500
+        );
+
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    const {
+        data: searchResults,
+        isFetching: isSearching
+    } = useQuery({
+        queryKey: ["owners-search", debouncedSearch],
+        queryFn: async () => {
+            if (!debouncedSearch) return [];
+
+            const res = await fetch(
+                `http://localhost:3000/owners?search=${encodeURIComponent(debouncedSearch)}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error("Gagal mencari pemilik");
+            }
+
+            const json = await res.json();
+            return json.data || [];
+        },
+        enabled:
+            isOpen &&
+            debouncedSearch.trim().length > 2
+    });
+
     useEffect(() => {
         if (!isOpen) {
-            reset();
+            reset({
+                ownerId: "",
+                companyName: "",
+                address: "",
+                phone: "",
+                instruments: [emptyInstrument()],
+                layanan: "TERA_ULANG",
+                lokasi: "KANTOR",
+                jadwalTanggal: "",
+                petugasId: "",
+                catatan: ""
+            });
+
             setSearchTerm("");
+            setDebouncedSearch("");
             setSelectedOwner(null);
         }
     }, [isOpen, reset]);
 
-    // Fungsi Pilih Pemilik
+    // ======================================
+    // PEMILIHAN PEMILIK
+    // ======================================
+
     const handleSelectOwner = (owner: any) => {
         setSelectedOwner(owner);
-        setValue("ownerId", owner.id);
-        setValue("companyName", owner.companyName); // Optional: isi form di belakang layar
+
+        setValue("ownerId", String(owner.id), {
+            shouldValidate: true
+        });
+
+        setValue("companyName", owner.companyName);
+        setValue("address", owner.address || "");
+        setValue("phone", owner.phone || "");
+
         setSearchTerm("");
+        setDebouncedSearch("");
     };
 
-    // Fungsi Batal Pilih Pemilik
     const handleClearOwner = () => {
         setSelectedOwner(null);
         setValue("ownerId", "");
         setValue("companyName", "");
+        setValue("address", "");
+        setValue("phone", "");
     };
 
-    // Mutasi Submit Data Gabungan
+    // ======================================
+    // PENYIMPANAN REGISTRASI
+    // ======================================
+
     const mutation = useMutation({
         mutationFn: async (values: RegistrasiFormData) => {
-            const res = await fetch("http://localhost:3000/permohonan/offline", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(values),
-            });
+            const payload = {
+                ...(values.ownerId
+                    ? { ownerId: values.ownerId }
+                    : {
+                        companyName: values.companyName?.trim(),
+                        address: values.address?.trim(),
+                        phone: values.phone?.trim()
+                    }),
+
+                layanan: values.layanan,
+                lokasi: values.lokasi,
+
+                jadwalTanggal: new Date(
+                    `${values.jadwalTanggal}T00:00:00`
+                ).toISOString(),
+
+                petugasId: values.petugasId,
+                catatan: values.catatan?.trim() || undefined,
+
+                instruments: values.instruments.map(alat => ({
+                    ...(alat.instrumentId
+                        ? { instrumentId: alat.instrumentId }
+                        : {}),
+
+                    jenisAlat: alat.jenisAlat,
+                    brand: alat.brand?.trim(),
+                    type: alat.type?.trim() || undefined,
+                    serialNumber: alat.serialNumber?.trim() || undefined,
+
+                    ...(alat.jenisAlat === "POMPA_UKUR_BBM"
+                        ? {
+                            nomorSPBU: alat.nomorSPBU?.trim(),
+                            stationAddress: alat.stationAddress?.trim(),
+                            lajuAlirMinimum: alat.lajuAlirMinimum,
+                            lajuAlirMaksimum: alat.lajuAlirMaksimum,
+                            jenisCairan: alat.jenisCairan?.trim() || undefined,
+                            identifikasiNozzle:
+                                alat.identifikasiNozzle?.trim() || undefined
+                        }
+                        : {
+                            capacityValue: alat.capacityValue,
+                            capacityUnit: alat.capacityUnit,
+                            dayabaca: alat.dayabaca,
+                            dayabacaUnit: alat.dayabacaUnit,
+                            class: alat.class
+                        })
+                }))
+            };
+
+            const res = await fetch(
+                "http://localhost:3000/permohonan/offline",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
 
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || "Gagal menyimpan permohonan");
+                const errorData = await res.json().catch(() => null);
+                throw new Error(
+                    errorData?.message || "Gagal menyimpan permohonan"
+                );
             }
+
             return res.json();
         },
+
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["peneraan-applications"] });
+            queryClient.invalidateQueries({
+                queryKey: ["peneraan-applications"]
+            });
+
             Swal.fire({
                 title: "Berhasil!",
-                text: "Registrasi offline berhasil disimpan.",
+                text: "Registrasi berhasil disimpan.",
                 icon: "success",
                 timer: 2000,
-                showConfirmButton: false,
+                showConfirmButton: false
             });
+
             onClose();
         },
-        onError: (error: any) => {
+
+        onError: (error: Error) => {
             Swal.fire("Gagal", error.message, "error");
-        },
+        }
     });
 
     if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pointer-events-auto backdrop-blur-sm">
-            <div className="bg-white w-full max-w-3xl max-h-[90vh] rounded-xl shadow-2xl flex flex-col relative z-10 animate-in fade-in zoom-in duration-200">
+    // ======================================
+    // TAMPILAN
+    // ======================================
 
-                {/* Header */}
-                <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 bg-slate-50 rounded-t-xl shrink-0">
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+            <div className="relative z-10 flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl bg-white shadow-2xl">
+
+                {/* HEADER */}
+
+                <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-slate-100 bg-slate-50 px-6 py-4">
                     <div>
-                        <h2 className="text-lg font-bold text-slate-900">Registrasi Peneraan (Offline)</h2>
-                        <p className="text-xs text-slate-500">Daftarkan pemilik, alat, dan jadwal sekaligus.</p>
+                        <h2 className="text-lg font-bold text-slate-900">
+                            Registrasi Peneraan (Offline)
+                        </h2>
+
+                        <p className="text-xs text-slate-500">
+                            {hasPUBBM
+                                ? "Registrasi pengujian Pompa Ukur BBM."
+                                : "Daftarkan pemilik, alat, dan jadwal sekaligus."}
+                        </p>
                     </div>
-                    <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1 bg-white rounded-md border border-slate-200 shadow-sm transition-colors cursor-pointer">
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="rounded-md border border-slate-200 bg-white p-1 text-slate-400 shadow-sm hover:text-slate-600"
+                    >
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
-                {/* Body Form (Scrollable) */}
-                <form onSubmit={handleSubmit((values) => mutation.mutate(values))} className="flex-1 overflow-y-auto p-6 space-y-8">
+                <form
+                    id="registrasi-offline-form"
+                    onSubmit={handleSubmit(values => mutation.mutate(values))}
+                    className="flex-1 space-y-6 overflow-y-auto p-6"
+                >
 
-                    {/* --- BAGIAN 1: DATA PEMILIK --- */}
-                    <section className="bg-slate-50/50 p-5 rounded-xl border border-slate-200">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-                                <span className="bg-navy-900 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">1</span>
-                                Data Pemilik Alat
-                            </h3>
-                        </div>
+                    {/* DATA PEMILIK */}
+
+                    <section className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+                        <h3 className="mb-4 font-semibold text-slate-800">
+                            1. Data Pemilik Alat
+                        </h3>
 
                         {selectedOwner ? (
-                            // Jika Pemilik Sudah Terpilih
-                            <div className="flex items-center justify-between bg-white border border-green-200 p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center justify-between rounded-lg border border-green-200 bg-white p-4">
                                 <div>
-                                    <p className="flex items-center gap-1.5 font-semibold text-slate-900">
-                                        <CheckCircle2 className="w-4 h-4 text-green-600" /> {selectedOwner.companyName}
+                                    <p className="font-semibold text-slate-900">
+                                        <CheckCircle2 className="mr-1 inline h-4 w-4 text-green-600" />
+                                        {selectedOwner.companyName}
                                     </p>
-                                    <p className="text-sm text-slate-500 mt-1">{selectedOwner.phone} — {selectedOwner.address}</p>
+                                    <p className="mt-1 text-sm text-slate-500">
+                                        {selectedOwner.phone} — {selectedOwner.address}
+                                    </p>
                                 </div>
-                                <button type="button" onClick={handleClearOwner} className="text-xs text-red-600 hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-md font-medium">
-                                    Batal Pilih
+
+                                <button
+                                    type="button"
+                                    onClick={handleClearOwner}
+                                    className="rounded-md bg-red-50 px-3 py-1.5 text-xs text-red-600"
+                                >
+                                    Ganti Pemilik
                                 </button>
                             </div>
                         ) : (
-                            // Jika Belum Terpilih -> Tampilkan Pencarian & Form Input Baru
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="relative">
-                                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                                    <label className="mb-1 block text-xs font-semibold">
+                                        Cari Pemilik Terdaftar
+                                    </label>
                                     <input
-                                        type="text"
-                                        placeholder="Cari Pemilik (Ketik Nama / No. HP)..."
                                         value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-md focus:border-navy-600 focus:ring-1 focus:ring-navy-600 bg-white"
+                                        onChange={e => setSearchTerm(e.target.value)}
+                                        placeholder="Cari nama atau nomor HP..."
+                                        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
                                     />
-                                    {/* Dropdown Pencarian */}
-                                    {searchTerm.length > 2 && (
-                                        <div className="absolute w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg z-20 max-h-48 overflow-y-auto">
+
+                                    {searchTerm.trim().length > 2 && (
+                                        <div className="absolute z-20 mt-1 max-h-48 w-full overflow-y-auto rounded-md border bg-white shadow-lg">
                                             {isSearching ? (
-                                                <p className="p-3 text-sm text-slate-500 text-center">Mencari...</p>
-                                            ) : searchResults?.length > 0 ? (
+                                                <p className="p-3 text-sm">Mencari...</p>
+                                            ) : searchResults?.length ? (
                                                 searchResults.map((owner: any) => (
-                                                    <div key={owner.id} onClick={() => handleSelectOwner(owner)} className="p-3 hover:bg-slate-50 border-b border-slate-100 cursor-pointer">
-                                                        <p className="font-medium text-sm text-slate-800">{owner.companyName}</p>
-                                                        <p className="text-xs text-slate-500">{owner.phone}</p>
-                                                    </div>
+                                                    <button
+                                                        key={owner.id}
+                                                        type="button"
+                                                        onClick={() => handleSelectOwner(owner)}
+                                                        className="block w-full border-b p-3 text-left hover:bg-slate-50"
+                                                    >
+                                                        <span className="block text-sm font-medium">
+                                                            {owner.companyName}
+                                                        </span>
+                                                        <span className="text-xs text-slate-500">
+                                                            {owner.phone}
+                                                        </span>
+                                                    </button>
                                                 ))
                                             ) : (
-                                                <p className="p-3 text-sm text-slate-500 text-center flex items-center justify-center gap-2">
-                                                    <UserX className="w-4 h-4" /> Tidak ditemukan. Silakan isi form di bawah.
+                                                <p className="p-3 text-sm text-slate-500">
+                                                    Pemilik tidak ditemukan. Isi data pemilik baru di bawah.
                                                 </p>
                                             )}
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-200 border-dashed mt-4">
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                    <div>
+                                        <label className="mb-1 block text-xs font-semibold">
+                                            Nama Pemilik / Perusahaan
+                                        </label>
+                                        <input
+                                            {...register("companyName")}
+                                            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                        />
+                                        {errors.companyName && (
+                                            <p className="mt-1 text-xs text-red-500">
+                                                {errors.companyName.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-1 block text-xs font-semibold">
+                                            Nomor Telepon
+                                        </label>
+                                        <input
+                                            {...register("phone")}
+                                            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                        />
+                                        {errors.phone && (
+                                            <p className="mt-1 text-xs text-red-500">
+                                                {errors.phone.message}
+                                            </p>
+                                        )}
+                                    </div>
+
                                     <div className="md:col-span-2">
-                                        <p className="text-xs font-medium text-slate-500 mb-3">Atau daftarkan pemilik baru:</p>
-                                        <label className="block text-xs font-semibold text-slate-700 mb-1">Nama Perusahaan / Pemilik</label>
-                                        <input type="text" {...register("companyName")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:border-navy-600 focus:ring-1 focus:ring-navy-600 bg-white" />
-                                        {errors.companyName && <p className="text-xs text-red-500 mt-1">{errors.companyName.message}</p>}
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-semibold text-slate-700 mb-1">No. Telepon / WA</label>
-                                        <input type="text" {...register("phone")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:border-navy-600 focus:ring-1 focus:ring-navy-600 bg-white" />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-semibold text-slate-700 mb-1">Alamat Lengkap</label>
-                                        <input type="text" {...register("address")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:border-navy-600 focus:ring-1 focus:ring-navy-600 bg-white" />
+                                        <label className="mb-1 block text-xs font-semibold">
+                                            Alamat Pemilik
+                                        </label>
+                                        <textarea
+                                            {...register("address")}
+                                            rows={2}
+                                            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                        />
+                                        {errors.address && (
+                                            <p className="mt-1 text-xs text-red-500">
+                                                {errors.address.message}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         )}
                     </section>
 
-                    {/* --- BAGIAN 2: DATA ALAT UKUR --- */}
-                    <section className="bg-slate-50/50 p-5 rounded-xl border border-slate-200">
-                        <h3 className="font-semibold text-slate-800 flex items-center gap-2 mb-4">
-                            <span className="bg-navy-900 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">2</span>
-                            Identitas Alat Ukur Baru
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* DAFTAR ALAT */}
+
+                    <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+                        <div className="flex items-center justify-between gap-3">
                             <div>
-                                <label className="block text-xs font-semibold text-slate-700 mb-1">Jenis Alat (Kategori)</label>
-                                <select
-                                    {...register("jenisAlat")}
-                                    className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white focus:border-navy-600 focus:ring-1 focus:ring-navy-600"
-                                >
-                                    <option value="">
-                                        -- Pilih Jenis UTTP --
-                                    </option>
-                                    {Object.entries(jenisAlatLabel).map(
-                                        ([value, label]) => (
-                                            <option
-                                                key={value}
-                                                value={value}
-                                            >
-                                                {label}
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-                                {errors.jenisAlat && <p className="text-xs text-red-500 mt-1">{errors.jenisAlat.message}</p>}
-                            </div>
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 mb-1">Merek Alat</label>
-                                <input type="text" {...register("brand")} placeholder="Contoh: Timbangan Gantung..." className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white" />
-                                {errors.brand && <p className="text-xs text-red-500 mt-1">{errors.brand.message}</p>}
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Tipe / Model</label>
-                                    <input type="text" {...register("type")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Nomor Seri</label>
-                                    <input type="text" {...register("serialNumber")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white" />
-                                </div>
+                                <h3 className="font-semibold text-slate-800">
+                                    2. Daftar Alat Ukur
+                                </h3>
+                                <p className="mt-1 text-xs text-slate-500">
+                                    Satu permohonan dapat memuat beberapa alat.
+                                </p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Kapasitas</label>
-                                    <input type="number" step="any" {...register("capacityValue")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Satuan Kap.</label>
-                                    <select {...register("capacityUnit")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white">
-                                        {capacityUnits.map(u => <option key={u} value={u}>{u}</option>)}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-2">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Daya Baca (e/d)</label>
-                                    <input type="number" step="any" {...register("dayabaca")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Satuan D.B.</label>
-                                    <select {...register("dayabacaUnit")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white">
-                                        {capacityUnits.map(u => <option key={u} value={u}>{u}</option>)}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Kelas</label>
-                                    <select {...register("class")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white">
-                                        {kelasAlat.map(c => <option key={c} value={c}>Kelas {c}</option>)}
-                                    </select>
-                                </div>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={() => appendInstrument(emptyInstrument())}
+                                className="rounded-md bg-slate-900 px-3 py-2 text-xs font-medium text-white hover:bg-slate-700"
+                            >
+                                + Tambah Alat
+                            </button>
                         </div>
+
+                        {errors.instruments?.root?.message && (
+                            <p className="text-xs text-red-500">
+                                {errors.instruments.root.message}
+                            </p>
+                        )}
+
+                        {instrumentFields.map((field, index) => {
+                            const jenis = instruments[index]?.jenisAlat;
+                            const isPUBBM = jenis === "POMPA_UKUR_BBM";
+                            const itemErrors = errors.instruments?.[index];
+
+                            return (
+                                <div
+                                    key={field.id}
+                                    className="space-y-4 rounded-lg border border-slate-200 bg-white p-4"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="font-semibold text-slate-800">
+                                            Alat #{index + 1}
+                                        </h4>
+
+                                        {instrumentFields.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => removeInstrument(index)}
+                                                className="rounded-md bg-red-50 px-3 py-1.5 text-xs text-red-600 hover:bg-red-100"
+                                            >
+                                                Hapus Alat
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="mb-1 block text-xs font-semibold">
+                                            Jenis Alat
+                                        </label>
+                                        <select
+                                            {...register(`instruments.${index}.jenisAlat` as const)}
+                                            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                        >
+                                            {Object.entries(jenisAlatLabel).map(([value, label]) => (
+                                                <option key={value} value={value}>
+                                                    {label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {itemErrors?.jenisAlat && (
+                                            <p className="mt-1 text-xs text-red-500">
+                                                {itemErrors.jenisAlat.message}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                        <div>
+                                            <label className="mb-1 block text-xs font-semibold">
+                                                Merek
+                                            </label>
+                                            <input
+                                                {...register(`instruments.${index}.brand` as const)}
+                                                placeholder="Contoh: TATSUNO"
+                                                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                            />
+                                            {itemErrors?.brand && (
+                                                <p className="mt-1 text-xs text-red-500">
+                                                    {itemErrors.brand.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label className="mb-1 block text-xs font-semibold">
+                                                Tipe / Model
+                                            </label>
+                                            <input
+                                                {...register(`instruments.${index}.type` as const)}
+                                                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="mb-1 block text-xs font-semibold">
+                                                Nomor Seri
+                                            </label>
+                                            <input
+                                                {...register(`instruments.${index}.serialNumber` as const)}
+                                                className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                            />
+                                        </div>
+
+                                        {isPUBBM ? (
+                                            <>
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Nomor SPBU
+                                                    </label>
+                                                    <input
+                                                        {...register(`instruments.${index}.nomorSPBU` as const)}
+                                                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                    />
+                                                    {itemErrors?.nomorSPBU && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.nomorSPBU.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div className="md:col-span-2">
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Alamat SPBU
+                                                    </label>
+                                                    <textarea
+                                                        {...register(`instruments.${index}.stationAddress` as const)}
+                                                        rows={2}
+                                                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                    />
+                                                    {itemErrors?.stationAddress && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.stationAddress.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Laju Alir Minimum
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        step="any"
+                                                        {...register(`instruments.${index}.lajuAlirMinimum` as const)}
+                                                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                    />
+                                                    {itemErrors?.lajuAlirMinimum && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.lajuAlirMinimum.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Laju Alir Maksimum
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        step="any"
+                                                        {...register(`instruments.${index}.lajuAlirMaksimum` as const)}
+                                                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Jenis Cairan
+                                                    </label>
+                                                    <input
+                                                        {...register(`instruments.${index}.jenisCairan` as const)}
+                                                        placeholder="Contoh: Pertalite"
+                                                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Identifikasi Nozzle
+                                                    </label>
+                                                    <input
+                                                        {...register(`instruments.${index}.identifikasiNozzle` as const)}
+                                                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                    />
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Kapasitas
+                                                    </label>
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="number"
+                                                            step="any"
+                                                            {...register(`instruments.${index}.capacityValue` as const)}
+                                                            className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                        />
+                                                        <select
+                                                            {...register(`instruments.${index}.capacityUnit` as const)}
+                                                            className="w-24 rounded-md border border-slate-300 px-2 py-2 text-sm"
+                                                        >
+                                                            <option value="">Satuan</option>
+                                                            {capacityUnits.map(unit => (
+                                                                <option key={unit} value={unit}>
+                                                                    {unit}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    {itemErrors?.capacityValue && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.capacityValue.message}
+                                                        </p>
+                                                    )}
+                                                    {itemErrors?.capacityUnit && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.capacityUnit.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Daya Baca
+                                                    </label>
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="number"
+                                                            step="any"
+                                                            {...register(`instruments.${index}.dayabaca` as const)}
+                                                            className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                        />
+                                                        <select
+                                                            {...register(`instruments.${index}.dayabacaUnit` as const)}
+                                                            className="w-24 rounded-md border border-slate-300 px-2 py-2 text-sm"
+                                                        >
+                                                            <option value="">Satuan</option>
+                                                            {capacityUnits.map(unit => (
+                                                                <option key={unit} value={unit}>
+                                                                    {unit}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    {itemErrors?.dayabaca && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.dayabaca.message}
+                                                        </p>
+                                                    )}
+                                                    {itemErrors?.dayabacaUnit && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.dayabacaUnit.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1 block text-xs font-semibold">
+                                                        Kelas Alat
+                                                    </label>
+                                                    <select
+                                                        {...register(`instruments.${index}.class` as const)}
+                                                        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                                    >
+                                                        <option value="">Pilih kelas</option>
+                                                        {kelasAlat.map(kelas => (
+                                                            <option key={kelas} value={kelas}>
+                                                                Kelas {kelas}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    {itemErrors?.class && (
+                                                        <p className="mt-1 text-xs text-red-500">
+                                                            {itemErrors.class.message}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </section>
 
-                    {/* --- BAGIAN 3: DATA PENERAAN & JADWAL --- */}
-                    <section className="bg-slate-50/50 p-5 rounded-xl border border-slate-200">
-                        <h3 className="font-semibold text-slate-800 flex items-center gap-2 mb-4">
-                            <span className="bg-navy-900 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">3</span>
+
+                    {/* PENERAAN DAN JADWAL */}
+
+                    <section className="rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+                        <h3 className="mb-4 font-semibold text-slate-800">
                             Pelaksanaan Peneraan
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Layanan</label>
-                                    <select {...register("layanan")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white">
-                                        <option value="TERA_ULANG">Tera Ulang</option>
-                                        <option value="TERA">Tera Baru</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Lokasi</label>
-                                    <select {...register("lokasi")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white">
-                                        <option value="KANTOR">Di Kantor (Sidang)</option>
-                                        <option value="TEMPAT_PAKAI">Di Tempat Pakai</option>
-                                    </select>
-                                </div>
+
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                                    Layanan
+                                </label>
+                                <select
+                                    {...register("layanan")}
+                                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                >
+                                    <option value="TERA_ULANG">Tera Ulang</option>
+                                    <option value="TERA">Tera Baru</option>
+                                </select>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Tanggal Sidang/Tera</label>
-                                    <input type="date" {...register("jadwalTanggal")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white" />
-                                    {errors.jadwalTanggal && <p className="text-xs text-red-500 mt-1">{errors.jadwalTanggal.message}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 mb-1">Petugas Penera</label>
-                                    <select {...register("petugasId")} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white">
-                                        <option value="">-- Pilih Petugas --</option>
-                                        {/* 4. Ubah petugasList menjadi inspectors */}
-                                        {inspectors?.map((p: any) => (
-                                            <option key={p.id} value={p.id}>{p.name}</option>
-                                        ))}
-                                    </select>
-                                    {errors.petugasId && <p className="text-xs text-red-500 mt-1">{errors.petugasId.message}</p>}
-                                </div>
+                            <div>
+                                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                                    Lokasi
+                                </label>
+                                <select
+                                    {...register("lokasi")}
+                                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                >
+                                    <option value="KANTOR">Di Kantor (Sidang)</option>
+                                    <option value="TEMPAT_PAKAI">Di Tempat Pakai</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                                    Tanggal Sidang/Tera
+                                </label>
+                                <input
+                                    type="date"
+                                    {...register("jadwalTanggal")}
+                                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                />
+                                {errors.jadwalTanggal && (
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.jadwalTanggal.message}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                                    Petugas Penera
+                                </label>
+                                <select
+                                    {...register("petugasId")}
+                                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                >
+                                    <option value="">-- Pilih Petugas --</option>
+                                    {inspectors?.map((petugas: any) => (
+                                        <option key={petugas.id} value={petugas.id}>
+                                            {petugas.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.petugasId && (
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors.petugasId.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="block text-xs font-semibold text-slate-700 mb-1">Catatan Tambahan (Opsional)</label>
-                                <input type="text" {...register("catatan")} placeholder="Contoh: Alat rusak parah di bagian X..." className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white" />
+                                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                                    Catatan Tambahan (Opsional)
+                                </label>
+                                <input
+                                    {...register("catatan")}
+                                    placeholder="Catatan tambahan"
+                                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                                />
                             </div>
                         </div>
                     </section>
-
                 </form>
 
-                {/* Footer Actions */}
-                <div className="px-6 py-4 border-t border-slate-100 bg-white flex justify-end gap-3 shrink-0 rounded-b-xl">
-                    <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-md transition-colors">
+                {/* FOOTER */}
+
+                <div className="flex shrink-0 justify-end gap-3 rounded-b-xl border-t border-slate-100 bg-white px-6 py-4">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                    >
                         Batal
                     </button>
+
                     <button
                         type="submit"
-                        onClick={handleSubmit((values) => mutation.mutate(values))}
+                        form="registrasi-offline-form"
                         disabled={mutation.isPending}
-                        className="px-5 py-2 text-sm font-medium text-white bg-navy-900 hover:bg-navy-800 rounded-md shadow-sm transition-colors disabled:opacity-50"
+                        className="rounded-md bg-slate-900 px-5 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
                     >
-                        {mutation.isPending ? "Menyimpan Data..." : "Simpan Registrasi"}
+                        {mutation.isPending
+                            ? "Menyimpan Data..."
+                            : "Simpan Registrasi"}
                     </button>
                 </div>
-
             </div>
-        </div>
+        </div >
     );
 }
