@@ -11,12 +11,14 @@ interface Props {
     template: CerapanTemplate;
     section: CerapanSection;
     data: any[];
+    onChange: (rows: any[]) => void;
 }
 
 export function CerapanTable({
     template,
     section,
-    data
+    data,
+    onChange
 }: Props) {
     const [
         rows,
@@ -62,22 +64,24 @@ export function CerapanTable({
             [key]: value
         };
 
-        const handled =
-            runCerapanHandler({
-                template,
-                section,
-                key,
-                value,
-                updated,
-                index
-            });
+
+        const handled = runCerapanHandler({
+            template,
+            section,
+            key,
+            value,
+            updated,
+            index
+        });
+
+        setRows(updated);
+        onChange(updated);
+
 
         if (handled) {
-            setRows(updated);
             return;
         }
 
-        setRows(updated);
     }
 
 
@@ -108,23 +112,31 @@ export function CerapanTable({
             layanan: identitas.layanan
         };
 
-        setRows((prev) => [
-            ...prev,
-            barisBaru
-        ]);
+
+        setRows((prev) => {
+            const updated = [...prev, barisBaru];
+            onChange(updated);
+            return updated;
+        });
+
     }
 
     function hapusBaris(index: number) {
         if (!isKebenaranJembatan) return;
 
-        setRows((prev) =>
-            prev
+
+        setRows((prev) => {
+            const updated = prev
                 .filter((_, i) => i !== index)
                 .map((row, i) => ({
                     ...row,
                     nomor: i + 1
-                }))
-        );
+                }));
+
+            onChange(updated);
+            return updated;
+        });
+
     }
 
     /*

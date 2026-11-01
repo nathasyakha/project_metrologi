@@ -274,6 +274,13 @@ export function PeneraanPage1() {
     };
 
     const handleOpenCerapan = (item: PermohonanPeneraan) => {
+        console.log("DATA ALAT YANG DIPILIH:", {
+            applicationId: item.id,
+            applicationInstrumentId: item.applicationInstrumentId,
+            instrumentId: item.instrumentId,
+            brand: item.instrumentBrand,
+            status: item.status,
+        });
         setSelectedPermohonan(item);
         setIsCerapanModalOpen(true);
     };
@@ -317,19 +324,24 @@ export function PeneraanPage1() {
             )
             .map((detail) => ({
                 ...app,
+
                 applicationInstrumentId: detail.id!,
                 instrumentId: detail.instrumentId,
                 status: detail.status!,
-                instrumentJenisAlat:
-                    detail.jenisAlat ?? undefined,
-                instrumentBrand:
-                    detail.brand ?? undefined,
-                instrumentType:
-                    detail.type ?? undefined,
-                instrumentSerial:
-                    detail.serialNumber ?? undefined,
+
+                instrumentJenisAlat: detail.jenisAlat ?? undefined,
+                instrumentBrand: detail.brand ?? undefined,
+                instrumentType: detail.type ?? undefined,
+                instrumentSerial: detail.serialNumber ?? undefined,
+
+                capacityValue: detail.capacityValue ?? undefined,
+                capacityUnit: detail.capacityUnit ?? undefined,
+                dayabaca: detail.dayabaca ?? undefined,
+                dayabacaUnit: detail.dayabacaUnit ?? undefined,
+                class: detail.class ?? undefined,
             }))
     );
+
     const permohonanColumns = getPermohonanColumns({
         isAdmin,
         isInspector,
@@ -515,14 +527,21 @@ export function PeneraanPage1() {
                             columns={
                                 getTugasColumns({
                                     onInputCerapan: (item) => {
-                                        console.log(
-                                            "CLASS DAN KAPASITAS",
-                                            {
-                                                class: item.class,
-                                                capacityValue: item.capacityValue,
-                                                dayabaca: item.dayabaca
-                                            }
-                                        );
+                                        console.log("DATA TUGAS TERPILIH:", item);
+
+                                        console.log("SPESIFIKASI ALAT:", {
+                                            applicationId: item.id,
+                                            applicationInstrumentId:
+                                                item.applicationInstrumentId,
+                                            instrumentId: item.instrumentId,
+                                            jenisAlat: item.instrumentJenisAlat,
+                                            kapasitas: item.capacityValue,
+                                            satuanKapasitas: item.capacityUnit,
+                                            dayaBaca: item.dayabaca,
+                                            satuanDayaBaca: item.dayabacaUnit,
+                                            kelas: item.class,
+                                        });
+
                                         setSelectedCerapan(item);
                                         setOpenCerapan(true);
                                     }

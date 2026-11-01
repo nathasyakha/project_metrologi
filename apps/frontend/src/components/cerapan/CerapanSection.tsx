@@ -11,12 +11,14 @@ interface Props {
     template: CerapanTemplate;
     section: SectionType;
     instrument: any;
+    onChange: (rows: any[]) => void;
 }
 
 export function CerapanSection({
     template,
     section,
-    instrument
+    instrument,
+    onChange
 }: Props) {
     const data = useMemo(() => {
         if (!section.generator) {
@@ -68,12 +70,9 @@ export function CerapanSection({
                                 rule: section.rule
                             }}
                             data={
-                                Array.isArray(data)
-                                    ?
-                                    data
-                                    :
-                                    [data]
+                                Array.isArray(data) ? data : [data]
                             }
+                            onChange={onChange}
                         />
                     </>
                 )
@@ -100,9 +99,8 @@ export function CerapanSection({
                         }
 
                         <CerapanChecklist
-                            items={
-                                section.items ?? []
-                            }
+                            items={section.items ?? []}
+                            onChange={onChange}
                         />
                     </>
                 )

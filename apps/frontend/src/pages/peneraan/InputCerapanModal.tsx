@@ -82,14 +82,6 @@ export function InputCerapanModal({
       );
       return;
     }
-    if (!permohonan.applicationInstrumentId) {
-      Swal.fire(
-        "Data alat tidak lengkap",
-        "ID detail alat tidak ditemukan. Pilih alat dari daftar tugas.",
-        "error"
-      );
-      return;
-    }
     setLoading(true);
 
     try {

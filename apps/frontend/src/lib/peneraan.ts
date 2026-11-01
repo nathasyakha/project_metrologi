@@ -167,10 +167,17 @@ export type PermohonanPeneraan = {
     applicationId?: string;
     instrumentId: string;
     status?: StatusPermohonan;
+
     jenisAlat?: JenisAlatUttp | null;
     brand?: string | null;
     type?: string | null;
     serialNumber?: string | null;
+
+    capacityValue?: string | null;
+    capacityUnit?: CapacityUnit | null;
+    dayabaca?: string | null;
+    dayabacaUnit?: CapacityUnit | null;
+    class?: InstrumentClass | null;
   }>;
 
   // Joined fields
@@ -331,6 +338,32 @@ export type CreateObservationInput = {
 
 export async function createObservation(input: CreateObservationInput) {
   const { data } = await api.post<{ message: string; data: TestObservation }>("/observations", input);
+  return data.data;
+}
+
+// ─── INPUT HASIL PENGUJIAN PER ALAT ─────────────────
+
+export type CreateHasilPermohonanInput = {
+  applicationInstrumentId: string;
+  status: "SAH" | "BATAL";
+  observationData: Record<string, any>;
+};
+
+export async function submitHasilPermohonan(
+  applicationId: string,
+  input: CreateHasilPermohonanInput
+) {
+  const { data } = await api.post<{
+    message: string;
+    data: {
+      application: Record<string, any>;
+      applicationInstrumentId: string;
+      instrumentId: string;
+      observationId: string;
+      instrumentStatus: string;
+    };
+  }>(`/permohonan/${applicationId}/hasil`, input);
+
   return data.data;
 }
 
