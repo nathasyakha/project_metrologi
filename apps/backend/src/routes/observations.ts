@@ -116,6 +116,44 @@ export const observationRoutes = new Elysia({
   )
 
   .get(
+    "/application-instrument/:applicationInstrumentId",
+    async ({ params }) => {
+
+      console.log(
+        "MENCARI CERAPAN:",
+        params.applicationInstrumentId
+      );
+
+      const [row] = await db
+        .select()
+        .from(testObservations)
+        .where(
+          eq(
+            testObservations.applicationInstrumentId,
+            params.applicationInstrumentId
+          )
+        )
+        .limit(1);
+
+      if (!row) {
+        throw httpError(
+          404,
+          "Hasil cerapan belum tersedia"
+        );
+      }
+
+      return {
+        data: row
+      };
+    },
+    {
+      params: t.Object({
+        applicationInstrumentId: t.String()
+      })
+    }
+  )
+
+  .get(
     '/:id',
     async ({ params, user }) => {
       const [row] = await db

@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "bun run --watch src/index.ts",
+    "build": "bun build ./src/index.ts --target=bun --outdir=dist",
+    "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:seed": "bun run src/db/seed.ts"
@@ -14,7 +16,7 @@
     "drizzle-kit": "^0.31.10"
   },
   "peerDependencies": {
-    "typescript": "^7"
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "@elysiajs/bearer": "^1.4.4",

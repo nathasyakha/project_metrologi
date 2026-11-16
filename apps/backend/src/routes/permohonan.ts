@@ -279,6 +279,7 @@ export const permohonanRoutes = new Elysia({
 
           // Petugas, hasil, dan sertifikat
           petugasName: users.name,
+          nipPetugas: users.nip,
           testObservationId:
             peneraanApplications.testObservationId,
           observationStatus: testObservations.status,
@@ -449,6 +450,7 @@ export const permohonanRoutes = new Elysia({
           createdAt: peneraanApplications.createdAt,
           companyName: instrumentOwners.companyName,
           petugasName: users.name,
+          nipPetugas: users.nip,
           legacyInstrumentId: peneraanApplications.instrumentId,
           testObservationId: peneraanApplications.testObservationId,
         })
@@ -593,6 +595,7 @@ export const permohonanRoutes = new Elysia({
           jenisCairan: instrumentsPubbm.jenisCairan,
           identifikasiNozzle: instrumentsPubbm.identifikasiNozzle,
           petugasName: users.name,
+          nipPetugas: users.nip,
         })
         .from(peneraanApplications)
         .leftJoin(instrumentOwners, eq(peneraanApplications.ownerId, instrumentOwners.id))
