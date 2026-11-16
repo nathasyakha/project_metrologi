@@ -127,6 +127,28 @@ export type TestObservation = {
   createdAt: string;
 };
 
+export type FetchObservationResponse = {
+  id: string;
+  instrumentId: string;
+  inspectorId: string;
+  observationData: Record<string, any>;
+  status: "SAH" | "BATAL";
+  testedAt: string;
+  createdAt: string;
+};
+
+export async function fetchObservationByApplicationInstrument(
+  applicationInstrumentId: string
+) {
+  const { data } = await api.get<{
+    data: TestObservation;
+  }>(
+    `/observations/application-instrument/${applicationInstrumentId}`
+  );
+
+  return data.data;
+}
+
 export type Certificate = {
   id: string;
   observationId: string;
@@ -195,6 +217,7 @@ export type PermohonanPeneraan = {
   dayabacaUnit?: CapacityUnit;
   class?: InstrumentClass;
   petugasName?: string;
+  nipPetugas?: string | null;
   certificateId?: string | null;
   certificateNumber?: string | null;
   observationStatus?: "SAH" | "BATAL" | null;

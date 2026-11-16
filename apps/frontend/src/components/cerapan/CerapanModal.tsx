@@ -6,17 +6,23 @@ import { CerapanSection } from "./CerapanSection";
 import { CerapanIdentity } from "./CerapanIdentity";
 import { mapInstrument } from "@/lib/cerapan/mapInstrument";
 import { formatJenisAlat } from "@/lib/utils/formatText";
+import { createApplicationResult } from "@/lib/peneraan";
+import { evaluasiKesimpulan } from "@/lib/cerapan/calculator/global/evaluasiKesimpulan";
+import Swal from "sweetalert2";
+import { getErrorMessage } from "@/lib/api";
 
 interface Props {
     open: boolean;
     onClose: () => void;
     instrument: any;
+    onSuccess?: () => void;
 }
 
 export function CerapanModal({
     open,
     onClose,
-    instrument
+    instrument,
+    onSuccess
 }: Props) {
 
     // Pusat penyimpanan sementara seluruh hasil cerapan
@@ -30,6 +36,20 @@ export function CerapanModal({
         return mapInstrument(instrument);
     }, [instrument]);
 
+    // DEBUG IDENTITAS INSTRUMEN
+    useEffect(() => {
+        if (!instrument) return;
+
+        console.log(
+            "DATA INSTRUMENT LENGKAP:",
+            instrument
+        );
+
+        console.log(
+            "MAPPED INSTRUMENT:",
+            mappedInstrument
+        );
+    }, [instrument, mappedInstrument]);
     // Template sesuai jenis alat
     const template = useMemo(() => {
         if (!mappedInstrument?.jenisAlat) {
@@ -63,17 +83,144 @@ export function CerapanModal({
     ]);
 
     // Simpan sementara untuk pemeriksaan Console
-    function handleSave() {
-        console.log("IDENTITAS INSTRUMEN:", mappedInstrument);
+    const [saving, setSaving] = useState(false);
+    console.log("DATA OBSERVATION:", observationData);
 
-        console.log("IDENTITAS PERMOHONAN:", {
-            applicationId: instrument?.id,
-            applicationInstrumentId:
-                instrument?.applicationInstrumentId,
-            instrumentId: instrument?.instrumentId
-        });
+    async function handleSave() {
+        if (saving) return;
 
-        console.log("HASIL CERAPAN LENGKAP:", observationData);
+        // Validasi identitas permohonan dan alat
+        if (!instrument || !mappedInstrument || !template) {
+            Swal.fire(
+                "Data tidak lengkap",
+                "Data instrumen atau template cerapan tidak ditemukan.",
+                "error"
+            );
+            return;
+        }
+
+        // Validasi ID permohonan dan detail alat
+        if (
+            !instrument.id ||
+            !instrument.applicationInstrumentId
+        ) {
+            Swal.fire(
+                "Identitas alat tidak lengkap",
+                "ID permohonan atau ID detail alat tidak ditemukan. Silakan muat ulang data.",
+                "error"
+            );
+            return;
+        }
+
+        // Evaluasi hasil seluruh pengujian
+        const kesimpulan = evaluasiKesimpulan(observationData);
+
+        if (!kesimpulan) {
+            Swal.fire(
+                "Pengujian belum selesai",
+                "Belum terdapat hasil pengujian yang cukup untuk menentukan kesimpulan.",
+                "warning"
+            );
+            return;
+        }
+
+        // Susun seluruh data berdasarkan kelompoknya
+        const payload = {
+            identitas: {
+                applicationId: instrument.id,
+                applicationInstrumentId:
+                    instrument.applicationInstrumentId,
+                instrumentId: instrument.instrumentId,
+                applicationNumber: instrument.applicationNumber,
+                jenisAlat: mappedInstrument.jenisAlat,
+                merek: mappedInstrument.merek,
+                model: mappedInstrument.model,
+                nomorSeri: mappedInstrument.nomorSeri,
+                namaPemilik: mappedInstrument.namaPemilik,
+                pegawaiBerhak: mappedInstrument.pegawaiBerhak,
+                nip: mappedInstrument.nip,
+                kelas: mappedInstrument.kelas,
+                kapasitasMinimum: mappedInstrument.kapasitasMinimum,
+                kapasitasMaksimum: mappedInstrument.kapasitasMaksimum,
+                nilaiE: mappedInstrument.nilaiE,
+                kapasitasUnit: mappedInstrument.kapasitasUnit,
+                layanan: mappedInstrument.layanan,
+            },
+
+            pemeriksaan: Object.fromEntries(
+                template!.pemeriksaan.map((section) => [
+                    section.id,
+                    observationData[section.id] ??
+                    (section.type === "checklist" ? section.items ?? [] : [])
+                ])
+            ),
+
+            pengujian: Object.fromEntries(
+                template!.pengujian.map((section) => [
+                    section.id,
+                    observationData[section.id] ?? []
+                ])
+            ),
+
+            kesimpulan,
+        };
+        console.log(
+            "PAYLOAD REPEATABILITY SEBELUM SIMPAN:",
+            JSON.stringify(
+                payload.pengujian?.repeatability,
+                null,
+                2
+            )
+        );
+        console.log(
+            "PAYLOAD PEMERIKSAAN SEBELUM SIMPAN:",
+            JSON.stringify(payload.pemeriksaan, null, 2)
+        );
+
+        console.log(
+            "PAYLOAD VISUAL:",
+            payload.pemeriksaan?.visual
+        );
+
+        setSaving(true);
+
+        try {
+            const result = await createApplicationResult(
+                instrument.id,
+                {
+                    applicationInstrumentId:
+                        instrument.applicationInstrumentId,
+                    status: kesimpulan,
+                    observationData: payload,
+                }
+            );
+
+            await Swal.fire({
+                title: "Cerapan Berhasil Disimpan",
+                text:
+                    kesimpulan === "SAH"
+                        ? "Hasil pengujian memenuhi syarat."
+                        : "Hasil pengujian tidak memenuhi syarat.",
+                icon: kesimpulan === "SAH" ? "success" : "warning",
+            });
+
+            console.log("HASIL BACKEND:", result);
+
+            onSuccess?.();
+            onClose();
+
+        } catch (error) {
+            Swal.fire(
+                "Gagal Menyimpan Cerapan",
+                getErrorMessage(
+                    error,
+                    "Terjadi kesalahan saat menyimpan hasil pengujian."
+                ),
+                "error"
+            );
+        } finally {
+            setSaving(false);
+        }
     }
 
     if (!open || !mappedInstrument) {
@@ -96,6 +243,25 @@ export function CerapanModal({
             </div>
         );
     }
+    console.log("DEBUG EVALUASI KESIMPULAN:");
+
+    Object.entries(observationData).forEach(
+        ([sectionId, rows]) => {
+            console.log(`SECTION: ${sectionId}`);
+
+            console.table(
+                (rows ?? []).map((row: any) => ({
+                    hasil: row.hasil,
+                    hasilTambahan: row.hasilTambahan,
+                    perluUjiTambahan: row.perluUjiTambahan,
+                    checked: row.checked,
+                    seluruhData: JSON.stringify(row)
+                }))
+            );
+        }
+    );
+    const kesimpulanKeseluruhan =
+        evaluasiKesimpulan(observationData);
 
     return (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
@@ -183,6 +349,34 @@ export function CerapanModal({
 
                 </div>
 
+                {/* KESIMPULAN KESELURUHAN */}
+                <div className="border rounded-lg p-5 bg-slate-50">
+
+                    <h3 className="font-bold text-base mb-3">
+                        III. KESIMPULAN PENGUJIAN
+                    </h3>
+
+                    {kesimpulanKeseluruhan === "SAH" && (
+                        <div className="p-4 rounded-lg bg-green-100 text-green-800 font-bold">
+                            HASIL PENGUJIAN: SAH
+                        </div>
+                    )}
+
+                    {kesimpulanKeseluruhan === "BATAL" && (
+                        <div className="p-4 rounded-lg bg-red-100 text-red-800 font-bold">
+                            HASIL PENGUJIAN: BATAL
+                        </div>
+                    )}
+
+                    {!kesimpulanKeseluruhan && (
+                        <div className="p-4 rounded-lg bg-amber-100 text-amber-800">
+                            Pengujian belum selesai. Belum terdapat hasil
+                            pengujian yang cukup untuk menentukan kesimpulan.
+                        </div>
+                    )}
+
+                </div>
+
                 {/* FOOTER */}
                 <div className="border-t px-6 py-4 flex justify-end gap-3">
 
@@ -195,9 +389,10 @@ export function CerapanModal({
 
                     <button
                         onClick={handleSave}
-                        className="px-4 py-2 bg-emerald-700 text-white rounded-md"
+                        disabled={saving}
+                        className="px-4 py-2 bg-emerald-700 text-white rounded-md disabled:opacity-50"
                     >
-                        Simpan Cerapan
+                        {saving ? "Menyimpan..." : "Simpan Cerapan"}
                     </button>
 
                 </div>

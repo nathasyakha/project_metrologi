@@ -26,7 +26,9 @@ export function CerapanTable({
     ] = useState<any[]>(data);
 
     const kesimpulan =
-        evaluasiKesimpulan(rows);
+        evaluasiKesimpulan({
+            [section.id]: rows
+        });
 
     /*
      * ==========================================
@@ -36,6 +38,7 @@ export function CerapanTable({
 
     useEffect(() => {
         setRows(data);
+        onChange(data);
     }, [data]);
 
     if (rows.length === 0) {
@@ -268,37 +271,21 @@ export function CerapanTable({
                                         const AdditionalComponent =
                                             section.additionalComponent;
 
-
                                         return (
-
                                             <AdditionalComponent
-
                                                 section={section}
-
                                                 row={row}
-
                                                 index={index}
-
                                                 jumlahKolom={jumlahKolom}
-
                                                 updateValue={updateValue}
-
                                             />
-
                                         );
-
-
                                     })()
                                 }
-
-
                             </Fragment>
-
                         )
                     )}
-
                 </tbody>
-
             </table>
             {/* ================================= */}
             {/* SUMMARY RESULT */}
@@ -309,64 +296,32 @@ export function CerapanTable({
                 section.summaryRows.length > 0 &&
                 (
                     <div className="mt-3 border rounded-lg overflow-hidden">
-
                         {
                             section.summaryRows.map(
                                 (item) => (
-
-                                    <div
-                                        key={item.key}
-                                        className="
-                                            flex
-                                            border-b
-                                            last:border-b-0
-                                            text-sm
-                                        "
-                                    >
-
-                                        <div
-                                            className="
-                                                w-1/2
-                                                px-3
-                                                py-2
-                                                bg-slate-100
-                                                font-semibold
-                                            "
-                                        >
+                                    <div key={item.key} className="flex border-b last:border-b-0 text-sm" >
+                                        <div className=" w-1/2 px-3 py-2 bg-slate-100 font-semibold" >
                                             {item.label}
                                         </div>
-
-
-                                        <div
-                                            className={`
-        w-1/2
-        px-3
-        py-2
-        text-center
-
-        ${item.key === "hasil" &&
-                                                    rows[rows.length - 1]?.[item.key] === "SAH"
-
-                                                    ?
-
-                                                    "text-green-600 font-semibold"
-
-                                                    :
-
-                                                    ""
-                                                }
+                                        <div className={`w-1/2 px-3 py-2 text-center ${item.key === "hasil" &&
+                                            rows[rows.length - 1]?.[item.key] === "SAH"
+                                            ?
+                                            "text-green-600 font-semibold"
+                                            :
+                                            ""
+                                            }
 
         ${item.key === "hasil" &&
-                                                    rows[rows.length - 1]?.[item.key] === "BATAL"
+                                                rows[rows.length - 1]?.[item.key] === "BATAL"
 
-                                                    ?
+                                                ?
 
-                                                    "text-red-600 font-semibold"
+                                                "text-red-600 font-semibold"
 
-                                                    :
+                                                :
 
-                                                    ""
-                                                }
+                                                ""
+                                            }
     `}
                                         >
                                             {
@@ -434,24 +389,17 @@ export function CerapanTable({
                     </div>
 
 
-                    <div
-                        className={`
-                w-1/2
-                px-3
-                py-2
-                text-center
-                font-semibold
-
-                ${kesimpulan === "SAH"
-                                ?
-                                "text-green-600"
-                                :
-                                "text-red-600"
-                            }
-            `}
+                    <div className={` w-1/2 px-3 py-2 text-center font-semibold
+    ${kesimpulan === "SAH"
+                            ? "text-green-600"
+                            : kesimpulan === "BATAL"
+                                ? "text-red-600"
+                                : "text-amber-600"
+                        }
+`}
                     >
 
-                        {kesimpulan}
+                        {kesimpulan ?? "-"}
 
                     </div>
 

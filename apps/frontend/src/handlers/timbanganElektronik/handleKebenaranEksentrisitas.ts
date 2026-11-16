@@ -85,30 +85,29 @@ export function handleKebenaranEksentrisitas({
     =============================
     */
 
-    const valid =
+    const isValidNumber = (value: any): boolean => {
+        if (
+            value === null ||
+            value === undefined ||
+            String(value).trim() === ""
+        ) {
+            return false;
+        }
 
-        Number.isFinite(
-            Number(row.muatanUji)
-        )
-        &&
-        Number.isFinite(
-            Number(row.penunjukan)
-        )
-        &&
-        Number.isFinite(
-            Number(row.nilaiE)
-        )
-        &&
-        Number.isFinite(
-            Number(row.bkd)
-        );
+        return Number.isFinite(Number(value));
+    };
+
+    const valid =
+        isValidNumber(row.muatanUji) &&
+        isValidNumber(row.penunjukan) &&
+        isValidNumber(row.nilaiE) &&
+        isValidNumber(row.bkd);
 
     if (!valid) {
-        updated[index].hasil =
-            null;
+        updated[index].hasil = null;
+        updated[index].pengamatan = null;
         return;
     }
-
     /*
     =============================
     EVALUASI

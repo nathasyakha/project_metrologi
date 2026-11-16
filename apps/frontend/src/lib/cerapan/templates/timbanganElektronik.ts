@@ -453,6 +453,7 @@ export const timbanganElektronik: CerapanTemplate = {
                     type:
                         "number"
                 },
+
             ],
 
             summaryRows: [
@@ -468,6 +469,12 @@ export const timbanganElektronik: CerapanTemplate = {
 
                     readonly:
                         true
+                },
+                {
+                    key: "bkd",
+                    label: "BKD (g)",
+                    type: "number",
+                    readonly: true,
                 },
                 {
                     key:

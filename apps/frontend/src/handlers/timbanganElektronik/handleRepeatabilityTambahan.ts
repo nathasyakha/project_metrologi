@@ -95,32 +95,23 @@ P = I + 0,5e - ΔL
     */
 
     const nilai = [
-
         row.penunjukanSebenarnya1,
-
         row.penunjukanSebenarnya2,
-
         row.penunjukanSebenarnya3
+    ];
 
-    ].filter(
+    const valid = nilai.every(
         v =>
             v !== null &&
-            v !== undefined
+            v !== undefined &&
+            String(v).trim() !== "" &&
+            Number.isFinite(Number(v))
     );
 
-
-    const valid =
-        nilai.length === 3;
-
-
     if (!valid) {
-
         row.repeatTambahan = null;
-
         row.hasilTambahan = null;
-
         return;
-
     }
 
     /*

@@ -24,6 +24,7 @@ import {
     deleteInstrument,
     deleteCertificate,
     deletePermohonan,
+    fetchObservationByApplicationInstrument,
     type Instrument,
     type InstrumentOwner,
     type PermohonanPeneraan,
@@ -44,7 +45,7 @@ import { InputCerapanModal } from "./InputCerapanModal";
 import { TerbitkanSertifikatModal } from "./TerbitkanSertifikatModal";
 import { CertificateViewModal } from "./CertificateViewModal";
 import { RegistrasiOfflineForm } from "./RegistrasiOfflineForm";
-
+import { generateCerapanPDF } from "@/lib/cerapan/generateCerapanPDF";
 
 export function PeneraanPage1() {
 
@@ -527,24 +528,83 @@ export function PeneraanPage1() {
                             columns={
                                 getTugasColumns({
                                     onInputCerapan: (item) => {
-                                        console.log("DATA TUGAS TERPILIH:", item);
-
-                                        console.log("SPESIFIKASI ALAT:", {
-                                            applicationId: item.id,
-                                            applicationInstrumentId:
-                                                item.applicationInstrumentId,
-                                            instrumentId: item.instrumentId,
-                                            jenisAlat: item.instrumentJenisAlat,
-                                            kapasitas: item.capacityValue,
-                                            satuanKapasitas: item.capacityUnit,
-                                            dayaBaca: item.dayabaca,
-                                            satuanDayaBaca: item.dayabacaUnit,
-                                            kelas: item.class,
-                                        });
-
                                         setSelectedCerapan(item);
                                         setOpenCerapan(true);
+                                    },
+
+
+
+                                    onDownloadCerapan: async (item) => {
+                                        try {
+                                            // Validasi cerapan sebelum request API
+                                            if (!item.testObservationId) {
+                                                await Swal.fire({
+                                                    title: "Cerapan Belum Tersedia",
+                                                    text: "Silakan input dan simpan hasil cerapan terlebih dahulu sebelum mengunduh PDF.",
+                                                    icon: "warning",
+                                                    confirmButtonText: "Mengerti",
+                                                    confirmButtonColor: "#0f766e",
+                                                });
+
+                                                return;
+                                            }
+
+                                            if (!item.applicationInstrumentId) {
+                                                throw new Error("ID detail alat tidak ditemukan");
+                                            }
+
+                                            const observation =
+                                                await fetchObservationByApplicationInstrument(
+                                                    item.applicationInstrumentId
+                                                );
+
+                                            console.log(
+                                                "DATA CERAPAN PDF:",
+                                                JSON.stringify(observation, null, 2)
+                                            );
+
+                                            console.log(
+                                                "REPEATABILITY HASIL FETCH:",
+                                                JSON.stringify(
+                                                    observation?.observationData?.pengujian?.repeatability,
+                                                    null,
+                                                    2
+                                                )
+                                            );
+
+
+                                            if (!observation?.observationData) {
+                                                await Swal.fire({
+                                                    title: "Data Cerapan Tidak Tersedia",
+                                                    text: "Hasil cerapan belum ditemukan. Silakan input cerapan terlebih dahulu.",
+                                                    icon: "warning",
+                                                    confirmButtonText: "Mengerti",
+                                                    confirmButtonColor: "#0f766e",
+                                                });
+
+                                                return;
+
+                                            }
+
+                                            generateCerapanPDF(observation);
+
+                                        } catch (error: any) {
+                                            console.error("DOWNLOAD ERROR:", error);
+
+                                            Swal.fire({
+                                                title: "Gagal Mengunduh Cerapan",
+                                                text:
+                                                    error.response?.data?.message ??
+                                                    error.message ??
+                                                    "Terjadi kesalahan saat mengunduh cerapan.",
+                                                icon: "error",
+                                                confirmButtonText: "Tutup",
+                                                confirmButtonColor: "#dc2626",
+                                            });
+                                        }
                                     }
+
+
                                 })
                             }
                             data={tugasList}
@@ -559,6 +619,7 @@ export function PeneraanPage1() {
                     setSelectedCerapan(null);
                 }}
                 instrument={selectedCerapan}
+                onSuccess={refreshAll}
             />
 
             {/* ═══════════════════════════════════════════════════════════════════════ */}

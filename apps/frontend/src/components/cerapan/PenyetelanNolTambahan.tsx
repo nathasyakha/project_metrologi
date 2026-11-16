@@ -44,8 +44,10 @@ export function CerapanPenyetelanNolTambahan({
             {/* ================================= */}
 
             {
-                section.generator === "PENYETELAN_NOL" ||
-                section.generator === "PENYETELAN_NOL_JEMBATAN" &&
+                (
+                    section.generator === "PENYETELAN_NOL" ||
+                    section.generator === "PENYETELAN_NOL_JEMBATAN"
+                ) &&
                 row.jenisPenyetelNol === "Otomatis" && (
 
                     <tr>
@@ -250,8 +252,10 @@ export function CerapanPenyetelanNolTambahan({
                 )
             }
             {
-                section.generator === "PENYETELAN_NOL" ||
-                section.generator === "PENYETELAN_NOL_JEMBATAN" &&
+                (
+                    section.generator === "PENYETELAN_NOL" ||
+                    section.generator === "PENYETELAN_NOL_JEMBATAN"
+                ) &&
                 row.jenisPenyetelNol === "Semi otomatis" && (
 
                     <tr>

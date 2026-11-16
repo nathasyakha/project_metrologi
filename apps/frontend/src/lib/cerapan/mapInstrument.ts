@@ -84,6 +84,11 @@ export function mapInstrument(item: any) {
         model: item.instrumentType,
         nomorSeri: item.instrumentSerial,
 
+        // IDENTITAS PEMILIK DAN PETUGAS
+        namaPemilik: item.companyName ?? null,
+        pegawaiBerhak: item.petugasName ?? null,
+        nip: item.nipPetugas ?? null,
+
         // Spesifikasi
         kelas,
 
