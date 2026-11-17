@@ -559,6 +559,15 @@ export function PeneraanPage1() {
                                                 );
 
                                             console.log(
+                                                "IDENTITAS CERAPAN:",
+                                                JSON.stringify(
+                                                    observation?.observationData?.identitas,
+                                                    null,
+                                                    2
+                                                )
+                                            );
+
+                                            console.log(
                                                 "DATA CERAPAN PDF:",
                                                 JSON.stringify(observation, null, 2)
                                             );
