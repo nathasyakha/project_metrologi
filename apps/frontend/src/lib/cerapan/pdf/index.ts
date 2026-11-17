@@ -1,6 +1,6 @@
-
 import type { TestObservation } from "@/lib/peneraan";
 import { generatePDF as generateElektronik } from "./timbanganElektronik/generatePDF";
+import { generatePDF as generatePegas } from "./timbanganPegas/generatePDF";
 
 export async function generatePDFByInstrument(
     observation: TestObservation
@@ -13,9 +13,7 @@ export async function generatePDFByInstrument(
             return generateElektronik(observation);
 
         case "TIMBANGAN_PEGAS":
-            throw new Error(
-                "Generator PDF Timbangan Pegas belum tersedia"
-            );
+            return generatePegas(observation);
 
         case "TIMBANGAN_MEJA":
             throw new Error(

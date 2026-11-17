@@ -316,8 +316,18 @@ export async function generatePDF(observation: Observation) {
         { align: "center" }
     );
 
-    currentY += 3;
+    currentY += 4;
 
+
+    // =========================
+    // I. PEMERIKSAAN
+    // =========================
+
+    doc.setFont("times", "bold");
+    doc.setFontSize(10);
+    doc.text("I. PEMERIKSAAN", 14, currentY);
+
+    currentY += 3;
     // =========================
     // INFORMASI LAYANAN
     // =========================
@@ -347,16 +357,6 @@ export async function generatePDF(observation: Observation) {
     });
 
     currentY = (doc as any).lastAutoTable.finalY + 3;
-
-    // =========================
-    // I. PEMERIKSAAN
-    // =========================
-
-    doc.setFont("times", "bold");
-    doc.setFontSize(10);
-    doc.text("I. PEMERIKSAAN", 14, currentY);
-
-    currentY += 4;
 
     // =========================
     // TABEL IDENTITAS PEMILIK
